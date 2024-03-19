@@ -1,7 +1,1 @@
-## Navgurukul
-
-navgurukul hr
-
-#### License
-
-mit
+# navgurukul_app
