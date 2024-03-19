@@ -48,7 +48,34 @@ app_license = "mit"
 # role_home_page = {
 # 	"Role": "home_page"
 # }
-
+fixtures = [
+    {
+        "dt":
+            "Custom Field",
+            "filters":[[
+                "name",
+                "in",
+                {
+                    "Employee-custom_father_name",
+                    "Employee-custom_reporting_manager_name",
+                    "Employee-custom_current_experience",
+                    "Employee-custom_age",
+                    "Employee-custom_joining_department",
+                    "Employee-custom_joining_designation",
+                    "Employee-custom_employee_assets",
+                    "Employee-custom_tshirt",
+                    "Employee-custom_laptop",
+                    "Employee-custom_comments",
+                    "Employee-custom_column_break_euadp",
+                    "Employee-custom_mobile_and_sim_card",
+                    "Employee-custom_comments_for_moblie_and_sim",
+                    "Employee-custom_sim_card",
+                    "Employee-custom_comment_for_sim",
+                    "Leave Application-custom_reason_for_cancel",
+                },
+             ]]
+    }
+]
 # Generators
 # ----------
 
