@@ -153,8 +153,10 @@ override_doctype_class = {
 
 doc_events = {
     "Time Tracker":{
-    "on_update": "navgurukul_app.navgurukul.events.total_hours_count"
-    }
+    "on_update": ["navgurukul_app.navgurukul.events.total_hours_count",
+                "navgurukul_app.navgurukul.events.month_dates"]
+    },
+   
 # 	"*": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
@@ -165,14 +167,14 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"navgurukul_app.tasks.all"
 # 	],
-# 	"daily": [
-# 		"navgurukul_app.tasks.daily"
-# 	],
-# 	"hourly": [
+	"daily": [
+		"navgurukul_app.navgurukul.events.employee_age_current_experience"
+	],
+# # 	"hourly": [
 # 		"navgurukul_app.tasks.hourly"
 # 	],
 # 	"weekly": [
@@ -181,7 +183,7 @@ doc_events = {
 # 	"monthly": [
 # 		"navgurukul_app.tasks.monthly"
 # 	],
-# }
+}
 
 # Testing
 # -------

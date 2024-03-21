@@ -75,7 +75,7 @@
  "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-15 17:26:41.631517",
+ "modified": "2024-03-20 15:47:40.742975",
  "modified_by": "Administrator",
  "module": "Navgurukul",
  "name": "Time Tracker",
@@ -110,7 +110,5 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 1,
- "track_seen": 1
+ "states": []
 }
