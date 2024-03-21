@@ -5,8 +5,10 @@ import frappe
 import erpnext
 import frappe
 from frappe import db
-from datetime import datetime
 from datetime import date
+from datetime import datetime
+import frappe
+from frappe.exceptions import ValidationError
 from frappe.model.document import Document
 from frappe import _
 from hrms.hr.doctype.leave_application.leave_application import LeaveApplication
@@ -57,35 +59,33 @@ def total_hours_count(doc, method=None):
 		print("An error occurred:", e)
 
 def month_dates(doc, method=None):
-	try:
-		timesheets = db.sql("""SELECT t.name, t.month FROM `tabTime Tracker` as t""", as_dict=True)
-		
-		# Calculate total hours for this employee
-		for timesheet in timesheets:
-			timesheet_hrs = db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
-			
-			# Convert each date string to datetime object and format month abbreviation
-			for entry in timesheet_hrs:
-				date_str = entry.get('date')
-				if date_str:
-					if isinstance(date_str, str):
-						date = datetime.strptime(date_str, "%Y-%m-%d")
-					else:
-						date = datetime(date_str.year, date_str.month, date_str.day)
-					formatted_date = date.strftime("%b")
-				
-					month = timesheet.month
-					
-					if month != formatted_date:
-						frappe.throw("The month in your timesheet doesn't match the formatted date")
-					
-					
-				else:
-					print("No date found for timesheet:", timesheet.name)
-		if month == formatted_date:
-			frappe.msgprint("🎉 Your timesheet has been successfully updated! 🚀")
-	except Exception as e:
-		print("An error occurred:", e)		
+    try:
+        timesheets = frappe.db.sql("""SELECT t.name, t.month FROM `tabTime Tracker` as t""", as_dict=True)
+        
+        # Calculate total hours for this employee
+        for timesheet in timesheets:
+            timesheet_hrs = frappe.db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
+            
+            # Convert each date string to datetime object and format month abbreviation
+            for entry in timesheet_hrs:
+                date_str = entry.get('date')
+                if date_str:
+                    if isinstance(date_str, str):
+                        date = datetime.strptime(date_str, "%Y-%m-%d")
+                    else:
+                        date = datetime(date_str.year, date_str.month, date_str.day)
+                    formatted_date = date.strftime("%b")
+                
+                    month = timesheet.month
+                    
+                    if month != formatted_date:
+                        raise ValidationError("⚠️ Oops! Month and the date on the Timesheet have a mismatch. Please check. 😊")
+                        
+        # Display success message once after the loop completes
+        frappe.msgprint("🎉 Your timesheet has been successfully updated! 🚀")
+
+    except Exception as e:
+        frappe.throw(f"{e}")
 
 
 from datetime import datetime
