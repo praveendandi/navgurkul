@@ -59,33 +59,35 @@ def total_hours_count(doc, method=None):
 		print("An error occurred:", e)
 
 def month_dates(doc, method=None):
-    try:
-        timesheets = frappe.db.sql("""SELECT t.name, t.month FROM `tabTime Tracker` as t""", as_dict=True)
-        
-        # Calculate total hours for this employee
-        for timesheet in timesheets:
-            timesheet_hrs = frappe.db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
-            
-            # Convert each date string to datetime object and format month abbreviation
-            for entry in timesheet_hrs:
-                date_str = entry.get('date')
-                if date_str:
-                    if isinstance(date_str, str):
-                        date = datetime.strptime(date_str, "%Y-%m-%d")
-                    else:
-                        date = datetime(date_str.year, date_str.month, date_str.day)
-                    formatted_date = date.strftime("%b")
-                
-                    month = timesheet.month
-                    
-                    if month != formatted_date:
-                        raise ValidationError("⚠️ Oops! Month and the date on the Timesheet have a mismatch. Please check. 😊")
-                        
-        # Display success message once after the loop completes
-        frappe.msgprint("🎉 Your timesheet has been successfully updated! 🚀")
+	try:
+		timesheets = frappe.db.sql("""SELECT t.name, t.month FROM `tabTime Tracker` as t""", as_dict=True)
+		
+		# Calculate total hours for this employee
+		for timesheet in timesheets:
+			timesheet_hrs = frappe.db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
+			
+			# Convert each date string to datetime object and format month abbreviation
+			for entry in timesheet_hrs:
+				date_str = entry.get('date')
+				if date_str:
+					if isinstance(date_str, str):
+						date = datetime.strptime(date_str, "%Y-%m-%d")
+					else:
+						date = datetime(date_str.year, date_str.month, date_str.day)
+					formatted_date = date.strftime("%b")
+				
+					month = timesheet.month
+					
+					if month != formatted_date:
+						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet have a mismatch. Please check. 😊")
+					else: 
+						pass  
+		# Display success message once after the loop completes
+		frappe.msgprint("🎉 Your timesheet has been successfully updated! 🚀")
 
-    except Exception as e:
-        frappe.throw(f"{e}")
+
+	except Exception as e:
+		frappe.throw(f"{e}")
 
 
 from datetime import datetime
