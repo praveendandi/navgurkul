@@ -60,8 +60,8 @@ def total_hours_count(doc, method=None):
 
 def month_dates(doc, method=None):
 	try:
-		timesheets = frappe.db.sql("""SELECT t.name, t.month FROM `tabTime Tracker` as t""", as_dict=True)
-		
+		timesheets = frappe.db.sql("""SELECT t.name,t.employee_name, t.month,t.workflow_state FROM `tabTime Tracker` as t""", as_dict=True) 
+
 		# Calculate total hours for this employee
 		for timesheet in timesheets:
 			timesheet_hrs = frappe.db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
@@ -83,16 +83,29 @@ def month_dates(doc, method=None):
 					else: 
 						pass  
 		# Display success message once after the loop completes
-		frappe.msgprint("🎉 Your timesheet has been successfully updated! 🚀")
-
-
+		if doc.workflow_state == "Pending" and not doc.reason_for_reject:
+			frappe.msgprint("🎉 Timesheet has been successfully updated for Pending state! 🚀")
+				
+		if doc.workflow_state == "Approve":
+			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}- {doc.name}!! 📣")
+			
+		if doc.workflow_state == "Reject":
+			reason_for_reject(doc)
+			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected for {doc.employee_name}- {doc.name}!! 📣")
+				
+					
+		
 	except Exception as e:
 		frappe.throw(f"{e}")
 
 
 from datetime import datetime
 
-def employee_age_current_experience(doc, method=None):
+def reason_for_reject(doc):
+	if doc.workflow_state == "Reject" and not doc.reason_for_reject:
+		raise ValidationError("Please provide a reason for rejection before proceeding.")
+	
+def employee_age_current_experience():
 	try:
 		emp_data = frappe.get_all("Employee", fields=["name", "date_of_joining", "date_of_birth"])
 		for emp in emp_data:
@@ -117,11 +130,11 @@ def employee_age_current_experience(doc, method=None):
 					current_experience = f"{years} Year {months} Months"
 
 				# Set the calculated experience in the 'current_experience' field
-				frappe.db.set_value('Employee', name, 'custom_current_experience', current_experience)
+				frappe.db.set_value('Employee', name, 'custom_current_experience', current_experience ,update_modified=False)
 
 			# Calculate age based on date_of_birth
 			if date_of_birth:
 				age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
-				frappe.db.set_value('Employee', name, 'custom_age', age)
+				frappe.db.set_value('Employee', name, 'custom_age', age ,update_modified=False)
 	except Exception as e:
 		print("An error occurred:", e)	
