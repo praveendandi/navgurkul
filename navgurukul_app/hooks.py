@@ -72,6 +72,7 @@ fixtures = [
                     "Employee-custom_sim_card",
                     "Employee-custom_comment_for_sim",
                     "Leave Application-custom_reason_for_cancel",
+                    "Employee-custom_aadhar_card_number",
                 },
              ]]
     }
