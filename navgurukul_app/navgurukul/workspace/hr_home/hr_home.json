@@ -1,0 +1,63 @@
+{
+ "charts": [
+  {
+   "chart_name": "Leave Balance",
+   "label": "Leave Balance"
+  }
+ ],
+ "content": "[{\"id\":\"bf6sjXsJXE\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Holiday List\",\"col\":4}},{\"id\":\"L8PsjoH7qf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Birthdays\",\"col\":4}},{\"id\":\"NLwj72Gk9W\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"On Leave Today\",\"col\":4}},{\"id\":\"48U3XWxdk8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Team\",\"col\":3}},{\"id\":\"-pm9gNwnBr\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Leave Balance\",\"col\":12}}]",
+ "creation": "2024-03-26 16:20:47.142196",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Hr Home",
+ "links": [],
+ "modified": "2024-03-28 09:27:43.364476",
+ "modified_by": "Administrator",
+ "module": "Navgurukul",
+ "name": "Hr Home",
+ "number_cards": [
+  {
+   "label": "Holiday List",
+   "number_card_name": "Holiday List"
+  },
+  {
+   "label": "Birthdays",
+   "number_card_name": "Birthdays"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Employee Self Service"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Dashboard Manager"
+  }
+ ],
+ "sequence_id": 33.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "My Team",
+   "link_to": "my-team",
+   "type": "Page"
+  }
+ ],
+ "title": "Hr Home"
+}

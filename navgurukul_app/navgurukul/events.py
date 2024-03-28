@@ -79,12 +79,12 @@ def month_dates(doc, method=None):
 					month = timesheet.month
 					
 					if month != formatted_date:
-						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet have a mismatch. Please check. 😊")
+						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet has a mismatch. Please check. 😊")
 					else: 
 						pass  
 		# Display success message once after the loop completes
 		if doc.workflow_state == "Pending" and not doc.reason_for_reject:
-			frappe.msgprint("🎉 Timesheet has been successfully updated for Pending state! 🚀")
+			frappe.msgprint("🎉 Timesheet has been successfully updated 🚀")
 				
 		if doc.workflow_state == "Approve":
 			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}- {doc.name}!! 📣")
