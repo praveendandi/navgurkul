@@ -17,15 +17,23 @@ from hrms.hr.doctype.leave_application.leave_application import LeaveApplication
 class LeaveApplication2(LeaveApplication):
 	def validate(self):
 		super().validate()
-		self.before_submit()
-	
-	def before_submit(self):
+		self.check_status()
+
+	# def after_insert(self):
+	# 	if self.workflow_state == 'Pending' and self.docstatus == 0:
+	# 		self.validate_before_rejection('Pending')
+	# 		self.check_status()
+			
+	def check_status(self):
+		if self.workflow_state == 'Pending' and self.docstatus == 0:
+			self.validate_before_rejection('Pending')
 		if self.workflow_state == 'Reject':
 			validation_result = self.validate_before_rejection('reject')
 			if not validation_result["success"]:
 				frappe.throw(validation_result["data"])
 			else:
 				pass
+
 				# self.workflow_state = "Rejected"
 				# self.status = "Rejected"
 				# self.save()
@@ -33,6 +41,9 @@ class LeaveApplication2(LeaveApplication):
 
 	def validate_before_rejection(self, action):
 		try:
+			if action == "Pending" and not self.custom_reason_for_cancel:
+				frappe.msgprint("Heyy😄!! Your leave request has been submitted🤩🏝️!")
+				
 			if action == 'reject' and not self.custom_reason_for_cancel:
 				raise ValueError("Please provide a reason for rejection before proceeding.")
 			# self.satus = "Rejected"
@@ -74,11 +85,11 @@ def month_dates(doc, method=None):
 						date = datetime.strptime(date_str, "%Y-%m-%d")
 					else:
 						date = datetime(date_str.year, date_str.month, date_str.day)
-					formatted_date = date.strftime("%b")
-				
+					teas_date = date.strftime("%b %Y")
 					month = timesheet.month
-					
-					if month != formatted_date:
+					current_year = datetime.now().year
+					month_year = f"{month} {current_year}"
+					if month_year != teas_date:
 						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet has a mismatch. Please check. 😊")
 					else: 
 						pass  
