@@ -74,7 +74,8 @@ fixtures = [
                     "Leave Application-custom_reason_for_cancel",
                     "Employee-custom_aadhar_card_number",
                     "Employee-custom_other_assets",
-                    "Employee-custom_other_assets_comments",
+                    "Employee-custom_section_break_cdenq",
+                    "Employee-custom_other_assest",
                 },
              ]]
     }

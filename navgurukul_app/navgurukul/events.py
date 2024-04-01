@@ -19,15 +19,11 @@ class LeaveApplication2(LeaveApplication):
 		super().validate()
 		self.check_status()
 
-	# def after_insert(self):
-	# 	if self.workflow_state == 'Pending' and self.docstatus == 0:
-	# 		self.validate_before_rejection('Pending')
-	# 		self.check_status()
-			
-	def check_status(self):
+	def after_insert(self):
 		if self.workflow_state == 'Pending' and self.docstatus == 0:
 			self.validate_before_rejection('Pending')
-		if self.workflow_state == 'Reject':
+			
+	def check_status(self):
 			validation_result = self.validate_before_rejection('reject')
 			if not validation_result["success"]:
 				frappe.throw(validation_result["data"])

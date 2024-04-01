@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-01 16:34:26.557413",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "assest",
+  "comments"
+ ],
+ "fields": [
+  {
+   "fieldname": "assest",
+   "fieldtype": "Data",
+   "label": "Assest"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Small Text",
+   "label": "Comments"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-04-01 16:35:54.491173",
+ "modified_by": "Administrator",
+ "module": "Navgurukul",
+ "name": "Assests",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
