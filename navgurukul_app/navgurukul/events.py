@@ -17,37 +17,36 @@ from hrms.hr.doctype.leave_application.leave_application import LeaveApplication
 class LeaveApplication2(LeaveApplication):
 	def validate(self):
 		super().validate()
-		self.check_status()
+
 
 	def after_insert(self):
-		if self.workflow_state == 'Pending' and self.docstatus == 0:
-			self.validate_before_rejection('Pending')
+		self.check_status()
+
+	def on_update(self):
+		self.check_status_reject()
 			
 	def check_status(self):
-			validation_result = self.validate_before_rejection('reject')
-			if not validation_result["success"]:
-				frappe.throw(validation_result["data"])
-			else:
-				pass
-
-				# self.workflow_state = "Rejected"
-				# self.status = "Rejected"
-				# self.save()
-				# self.reload()
+			
+			if self.workflow_state == 'Pending':
+				self.validate_before_rejection('Pending')
+	def check_status_reject(self):
+			if self.workflow_state == 'Reject':
+				self.validate_before_rejection('Reject')
+			
 
 	def validate_before_rejection(self, action):
-		try:
-			if action == "Pending" and not self.custom_reason_for_cancel:
-				frappe.msgprint("Heyy😄!! Your leave request has been submitted🤩🏝️!")
-				
-			if action == 'reject' and not self.custom_reason_for_cancel:
-				raise ValueError("Please provide a reason for rejection before proceeding.")
+		# try:
+		if action == "Pending" and not self.custom_reason_for_cancel:
+			frappe.msgprint("Heyy😄!! Your leave request has been submitted🤩🏝️!")
+			
+		if action == 'Reject' and not self.custom_reason_for_cancel:
+			frappe.throw("Please provide a reason for rejection before proceeding.")
 			# self.satus = "Rejected"
-		except ValueError as e:
-			frappe.log_error(str(e))
-			return {"success": False, "data": str(e)}
+		# except ValueError as e:
+		# 	frappe.log_error(str(e))
+		# 	return {"success": False, "data": str(e)}
 		
-		return {"success": True, "data": "Validation successful"}
+		# return {"success": True, "data": "Validation successful"}
 	
 def total_hours_count(doc, method=None):
 	try:
@@ -85,6 +84,7 @@ def month_dates(doc, method=None):
 					month = timesheet.month
 					current_year = datetime.now().year
 					month_year = f"{month} {current_year}"
+
 					if month_year != teas_date:
 						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet has a mismatch. Please check. 😊")
 					else: 
