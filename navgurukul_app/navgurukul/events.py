@@ -41,6 +41,9 @@ class LeaveApplication2(LeaveApplication):
 			
 		if action == 'Reject' and not self.custom_reason_for_cancel:
 			frappe.throw("Please provide a reason for rejection before proceeding.")
+		if self.workflow_state == "Reject":
+			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Leave has been rejected for {self.employee_name}- {self.name}!! 📣")
+				
 			# self.satus = "Rejected"
 		# except ValueError as e:
 		# 	frappe.log_error(str(e))
