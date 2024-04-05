@@ -154,3 +154,25 @@ def get_employee_ctc(name):
 	employee_ctc = frappe.db.get_list("Employee",{"name":name},['employee_name','ctc'])
 	print(employee_ctc,"//99994444")
 	return employee_ctc
+
+def create_attendance(doc, method=None):
+    if method == "on_submit" or doc.workflow_state == "Approve":
+        for time_sheet in doc.time_sheets:
+            if not frappe.db.exists("Attendance",{"employee":doc.employee,"attendance_date":time_sheet.date}):
+                try:
+                    create_attendance_record = frappe.get_doc({
+                        "doctype": "Attendance",
+                        "employee": doc.employee,
+                        "attendance_date": time_sheet.date,
+						"docstatus":1
+                    })
+                    if time_sheet.hours > 4:
+                        create_attendance_record.status = "Present"
+                        
+                    else:
+                        create_attendance_record.status = "Half Day"
+                
+                    create_attendance_record.insert()
+
+                except Exception as e:
+                    continue

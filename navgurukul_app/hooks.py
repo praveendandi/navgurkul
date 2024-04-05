@@ -159,7 +159,8 @@ override_doctype_class = {
 doc_events = {
     "Time Tracker":{
     "on_update": ["navgurukul_app.navgurukul.events.total_hours_count",
-                "navgurukul_app.navgurukul.events.month_dates"]
+                "navgurukul_app.navgurukul.events.month_dates"],
+    "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
     },
    
 # 	"*": {
