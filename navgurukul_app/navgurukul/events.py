@@ -148,3 +148,9 @@ def employee_age_current_experience():
 				frappe.db.set_value('Employee', name, 'custom_age', age ,update_modified=False)
 	except Exception as e:
 		print("An error occurred:", e)	
+
+@frappe.whitelist()
+def get_employee_ctc(name):
+	employee_ctc = frappe.db.get_list("Employee",{"name":name},['employee_name','ctc'])
+	print(employee_ctc,"//99994444")
+	return employee_ctc
