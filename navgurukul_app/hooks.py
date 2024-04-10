@@ -77,6 +77,7 @@ fixtures = [
                     "Employee-custom_section_break_cdenq",
                     "Employee-custom_other_assest",
                     "Employee-custom_marital_status",
+                    "Expense Claim Detail-custom_rescript",
                 },
              ]]
     }

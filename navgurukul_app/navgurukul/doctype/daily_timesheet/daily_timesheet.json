@@ -42,13 +42,14 @@
   {
    "fieldname": "day",
    "fieldtype": "Data",
-   "label": "Day"
+   "label": "Day",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-05 18:05:56.332543",
+ "modified": "2024-04-10 14:50:21.711121",
  "modified_by": "Administrator",
  "module": "Navgurukul",
  "name": "Daily TimeSheet",
