@@ -505,146 +505,28 @@
 #         data.append(employee_data)
 
 #     return data
-# import frappe
-
-# def execute(filters=None):
-#     columns, data = get_columns(), get_data()
-#     return columns, data
-
-# def get_columns():
-#     # Retrieve distinct dates from the child table "tabDaily TimeSheet"
-#     distinct_dates_daily_timesheet = frappe.db.sql("""
-#         SELECT DISTINCT date
-#         FROM `tabDaily TimeSheet`
-#         ORDER BY date
-#     """, as_dict=True)
-
-#     # Retrieve distinct leave dates from the "Leave Application" table
-#     distinct_leave_dates = frappe.db.sql("""
-#         SELECT DISTINCT from_date
-#         FROM `tabLeave Application`
-#         ORDER BY from_date
-#     """, as_dict=True)
-
-#     # Combine all sets of dates
-#     all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
-#                        [date['from_date'] for date in distinct_leave_dates])
-
-#     columns = [
-#         {
-#             "label": "Employee Number",
-#             "fieldtype": "Link",
-#             "fieldname": "employee",
-#             "options": "Employee",
-#             "width": 150,
-#         },
-#         {
-#             "label": "Employee Name",
-#             "fieldtype": "Data",
-#             "fieldname": "employee_name",
-#             "width": 150,
-#         }
-#     ]
-
-#     # Add columns for each date from both sets
-#     for date in all_dates:
-#         columns.append({
-#             "label": str(date),  # Convert to string if not already
-#             "fieldtype": "Select",
-#             "fieldname": str(date),  # Convert to string if not already
-#             "default": "Present",  # Default to "Present" status
-#             "width": 150
-#         })
-
-#     return columns
-
-# def get_data():
-#     data = []
-
-#     # Retrieve all employees from the "Time Tracker" doctype
-#     employees = frappe.db.sql("""
-#         SELECT employee, employee_name
-#         FROM `tabTime Tracker`
-#     """, as_dict=True)
-
-#     # Iterate over employees
-#     for employee in employees:
-#         employee_data = {
-#             "employee": employee["employee"],
-#             "employee_name": employee["employee_name"]
-#         }
-
-#         # Retrieve distinct dates for the employee from the child table "tabDaily TimeSheet"
-#         distinct_dates_daily_timesheet = frappe.db.sql("""
-#             SELECT DISTINCT date
-#             FROM `tabDaily TimeSheet`
-#             WHERE parent = %s
-#             ORDER BY date
-#         """, employee["employee"], as_dict=True)
-
-#         # Retrieve distinct leave dates for the employee from the "Leave Application" table
-#         distinct_leave_dates = frappe.db.sql("""
-#             SELECT DISTINCT from_date
-#             FROM `tabLeave Application`
-#             WHERE employee = %s
-#             ORDER BY from_date
-#         """, employee["employee"], as_dict=True)
-
-#         # Combine both sets of dates
-#         all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
-#                            [date['from_date'] for date in distinct_leave_dates])
-
-#         # Iterate over all dates
-#         for date in all_dates:
-#             # Check if the date is present in the child table "tabDaily TimeSheet"
-#             present_daily_timesheet = frappe.db.exists("tabDaily TimeSheet", {"parent": employee["employee"], "date": date})
-
-#             # Check if the date is a leave date
-#             leave_date = frappe.db.exists("tabLeave Application", {"employee": employee["employee"], "from_date": date})
-
-#             # Set the status based on the presence in the child table and leave application
-#             if present_daily_timesheet:
-#                 status = "Present"
-#             elif leave_date:
-#                 status = "Leave"
-#             else:
-#                 status = ""
-
-#             employee_data[str(date)] = status
-
-#         data.append(employee_data)
-
-#     return data
-
 import frappe
-from datetime import datetime
 
 def execute(filters=None):
-    selected_month = filters.get("selected_month")
-    columns, data = get_columns(selected_month), get_data(selected_month)
+    columns, data = get_columns(), get_data()
     return columns, data
 
-def get_columns(selected_month):
-    # Convert the selected month to a datetime object
-    selected_month_date = datetime.strptime(selected_month, "%Y-%m")
-
-    # Retrieve distinct dates from the child table "tabDaily TimeSheet" within the selected month
+def get_columns():
+    # Retrieve distinct dates from the child table "tabDaily TimeSheet"
     distinct_dates_daily_timesheet = frappe.db.sql("""
         SELECT DISTINCT date
         FROM `tabDaily TimeSheet`
-        WHERE MONTH(date) = %s AND YEAR(date) = %s
-        ORDER BY date ASC
-    """, (selected_month_date.month, selected_month_date.year), as_dict=True)
+        ORDER BY date
+    """, as_dict=True)
 
-    # Retrieve distinct leave dates from the "Leave Application" table within the selected month
+    # Retrieve distinct leave dates from the "Leave Application" table
     distinct_leave_dates = frappe.db.sql("""
         SELECT DISTINCT from_date
         FROM `tabLeave Application`
-        WHERE MONTH(from_date) = %s AND YEAR(from_date) = %s
-        ORDER BY from_date ASC
-    """, (selected_month_date.month, selected_month_date.year), as_dict=True)
+        ORDER BY from_date
+    """, as_dict=True)
 
-    # Combine all sets of dates and sort them in ascending order
+    # Combine all sets of dates
     all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
                        [date['from_date'] for date in distinct_leave_dates])
 
@@ -676,11 +558,8 @@ def get_columns(selected_month):
 
     return columns
 
-def get_data(selected_month):
+def get_data():
     data = []
-
-    # Convert the selected month to a datetime object
-    selected_month_date = datetime.strptime(selected_month, "%Y-%m")
 
     # Retrieve all employees from the "Time Tracker" doctype
     employees = frappe.db.sql("""
@@ -695,23 +574,23 @@ def get_data(selected_month):
             "employee_name": employee["employee_name"]
         }
 
-        # Retrieve distinct dates for the employee from the child table "tabDaily TimeSheet" within the selected month
+        # Retrieve distinct dates for the employee from the child table "tabDaily TimeSheet"
         distinct_dates_daily_timesheet = frappe.db.sql("""
             SELECT DISTINCT date
             FROM `tabDaily TimeSheet`
-            WHERE parent = %s AND MONTH(date) = %s AND YEAR(date) = %s
-            ORDER BY date ASC
-        """, (employee["employee"], selected_month_date.month, selected_month_date.year), as_dict=True)
+            WHERE parent = %s
+            ORDER BY date
+        """, employee["employee"], as_dict=True)
 
-        # Retrieve distinct leave dates for the employee from the "Leave Application" table within the selected month
+        # Retrieve distinct leave dates for the employee from the "Leave Application" table
         distinct_leave_dates = frappe.db.sql("""
             SELECT DISTINCT from_date
             FROM `tabLeave Application`
-            WHERE employee = %s AND MONTH(from_date) = %s AND YEAR(from_date) = %s
-            ORDER BY from_date ASC
-        """, (employee["employee"], selected_month_date.month, selected_month_date.year), as_dict=True)
+            WHERE employee = %s
+            ORDER BY from_date
+        """, employee["employee"], as_dict=True)
 
-        # Combine both sets of dates and sort them in ascending order
+        # Combine both sets of dates
         all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
                            [date['from_date'] for date in distinct_leave_dates])
 
@@ -736,6 +615,127 @@ def get_data(selected_month):
         data.append(employee_data)
 
     return data
+
+# import frappe
+# from datetime import datetime
+
+# def execute(filters=None):
+#     selected_month = filters.get("selected_month")
+#     columns, data = get_columns(selected_month), get_data(selected_month)
+#     return columns, data
+
+# def get_columns(selected_month):
+#     # Convert the selected month to a datetime object
+#     selected_month_date = datetime.strptime(selected_month, "%Y-%m")
+
+#     # Retrieve distinct dates from the child table "tabDaily TimeSheet" within the selected month
+#     distinct_dates_daily_timesheet = frappe.db.sql("""
+#         SELECT DISTINCT date
+#         FROM `tabDaily TimeSheet`
+#         WHERE MONTH(date) = %s AND YEAR(date) = %s
+#         ORDER BY date ASC
+#     """, (selected_month_date.month, selected_month_date.year), as_dict=True)
+
+#     # Retrieve distinct leave dates from the "Leave Application" table within the selected month
+#     distinct_leave_dates = frappe.db.sql("""
+#         SELECT DISTINCT from_date
+#         FROM `tabLeave Application`
+#         WHERE MONTH(from_date) = %s AND YEAR(from_date) = %s
+#         ORDER BY from_date ASC
+#     """, (selected_month_date.month, selected_month_date.year), as_dict=True)
+
+#     # Combine all sets of dates and sort them in ascending order
+#     all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
+#                        [date['from_date'] for date in distinct_leave_dates])
+
+#     columns = [
+#         {
+#             "label": "Employee Number",
+#             "fieldtype": "Link",
+#             "fieldname": "employee",
+#             "options": "Employee",
+#             "width": 150,
+#         },
+#         {
+#             "label": "Employee Name",
+#             "fieldtype": "Data",
+#             "fieldname": "employee_name",
+#             "width": 150,
+#         }
+#     ]
+
+#     # Add columns for each date from both sets
+#     for date in all_dates:
+#         columns.append({
+#             "label": str(date),  # Convert to string if not already
+#             "fieldtype": "Select",
+#             "fieldname": str(date),  # Convert to string if not already
+#             "default": "Present",  # Default to "Present" status
+#             "width": 150
+#         })
+
+#     return columns
+
+# def get_data(selected_month):
+#     data = []
+
+#     # Convert the selected month to a datetime object
+#     selected_month_date = datetime.strptime(selected_month, "%Y-%m")
+
+#     # Retrieve all employees from the "Time Tracker" doctype
+#     employees = frappe.db.sql("""
+#         SELECT employee, employee_name
+#         FROM `tabTime Tracker`
+#     """, as_dict=True)
+
+#     # Iterate over employees
+#     for employee in employees:
+#         employee_data = {
+#             "employee": employee["employee"],
+#             "employee_name": employee["employee_name"]
+#         }
+
+#         # Retrieve distinct dates for the employee from the child table "tabDaily TimeSheet" within the selected month
+#         distinct_dates_daily_timesheet = frappe.db.sql("""
+#             SELECT DISTINCT date
+#             FROM `tabDaily TimeSheet`
+#             WHERE parent = %s AND MONTH(date) = %s AND YEAR(date) = %s
+#             ORDER BY date ASC
+#         """, (employee["employee"], selected_month_date.month, selected_month_date.year), as_dict=True)
+
+#         # Retrieve distinct leave dates for the employee from the "Leave Application" table within the selected month
+#         distinct_leave_dates = frappe.db.sql("""
+#             SELECT DISTINCT from_date
+#             FROM `tabLeave Application`
+#             WHERE employee = %s AND MONTH(from_date) = %s AND YEAR(from_date) = %s
+#             ORDER BY from_date ASC
+#         """, (employee["employee"], selected_month_date.month, selected_month_date.year), as_dict=True)
+
+#         # Combine both sets of dates and sort them in ascending order
+#         all_dates = sorted([date['date'] for date in distinct_dates_daily_timesheet] + 
+#                            [date['from_date'] for date in distinct_leave_dates])
+
+#         # Iterate over all dates
+#         for date in all_dates:
+#             # Check if the date is present in the child table "tabDaily TimeSheet"
+#             present_daily_timesheet = frappe.db.exists("tabDaily TimeSheet", {"parent": employee["employee"], "date": date})
+
+#             # Check if the date is a leave date
+#             leave_date = frappe.db.exists("tabLeave Application", {"employee": employee["employee"], "from_date": date})
+
+#             # Set the status based on the presence in the child table and leave application
+#             if present_daily_timesheet:
+#                 status = "Present"
+#             elif leave_date:
+#                 status = "Leave"
+#             else:
+#                 status = ""
+
+#             employee_data[str(date)] = status
+
+#         data.append(employee_data)
+
+#     return data
 
 
 

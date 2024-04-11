@@ -90,14 +90,24 @@ def month_dates(doc, method=None):
 						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet has a mismatch. Please check. 😊")
 					else: 
 						pass  
-					leave_applications = frappe.get_list("Leave Application", filters={"employee": timesheet.employee, "status": "Approved"}, fields=['from_date', 'to_date'])
+					# leave_applications = frappe.get_list("Leave Application", filters={"employee": timesheet.employee, "status": "Approved"}, fields=['from_date', 'to_date'])
+					# for leave_application in leave_applications:
+					# 	from_date = leave_application.get('from_date')
+					# 	to_date = leave_application.get('to_date')
+						
+					# 	if from_date <= date.date() <= to_date:
+					# 		raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave {date.date()}. Please check!😇")
+					leave_applications = frappe.get_list("Leave Application", filters={"employee": timesheet.employee, "status": "Approved"}, fields=['from_date', 'to_date', 'leave_type','total_leave_days'])
 					for leave_application in leave_applications:
 						from_date = leave_application.get('from_date')
 						to_date = leave_application.get('to_date')
-						
-						if from_date <= date.date() <= to_date:
-							raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave. Please check!😇")
-					
+						# leave_type = leave_application.get('leave_type')
+						total_leave_days = leave_application.get('total_leave_days')
+						print(total_leave_days,"total_leave_daystotal_leave_daystotal_leave_days")
+						# For full-day leaves, check if the timesheet date falls within the leave period
+						if from_date <= date.date() <= to_date and total_leave_days > 0.5:
+							raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave {date.date()}. Please check!😇")
+
 		# Display success message once after the loop completes
 		if doc.workflow_state == "Pending" and not doc.reason_for_reject:
 			frappe.msgprint("🎉 Timesheet has been successfully updated 🚀")
@@ -177,11 +187,9 @@ def create_attendance(doc, method=None):
 						"docstatus":1
 					})
 					if time_sheet.hours > 4:
-						print(time_sheet.hours,"888888888888")
 						create_attendance_record.status = "Present"
 						
 					else:
-						print(time_sheet.hours,"9999999999")
 						create_attendance_record.status = "Half Day"
 						leave_type =create_leave_throw_attendance(doc,time_sheet.date)
 						create_attendance_record.leave_type = leave_type

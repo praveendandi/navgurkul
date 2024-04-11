@@ -287,7 +287,7 @@ def get_data(filters):
             for i in final_data:
                 net_pay = i.get("Gross Amount") - i.get("total_deduction")
                 i.update({"net_pay": net_pay})
-    # print(final_data,"999999999999999999")
+    print(final_data,"999999999999999999")
     return final_data
 
 def earnings_details(salary_earnings, employee_ssa):
@@ -335,38 +335,74 @@ def earnings_details(salary_earnings, employee_ssa):
             final_result.setdefault("Gross Amount", 0)
             final_result["Gross Amount"] += each['amount']
 
-    print(final_result, "/9776555555")
+    # print(final_result, "/9776555555")
     return final_result
 
-def deductions_details(salary_earnings,salary_deductions,employee_ssa):
+# def deductions_details(salary_earnings,salary_deductions,employee_ssa):
 
-    final_deductions = {}
-    for each in salary_deductions:
+#     final_deductions = {}
+#     for each in salary_deductions:
         
-        pf_formula = each['formula'].split(' * ')
+#         pf_formula = each['formula'].split(' * ')
     
-        for abr in salary_earnings:
-            if abr["abbr"] == pf_formula[0]:
-                pf_abbr = abr['formula'].split(" * ")
-                pf_amount = abr['amount']
-        formula_value = [float(s) for s in re.findall(r'\d.+', each['formula'])]
+#         for abr in salary_earnings:
+#             if abr["abbr"] == pf_formula[0]:
+#                 pf_abbr = abr['formula'].split(" * ")
+#                 pf_amount = abr['amount']
+#         formula_value = [float(s) for s in re.findall(r'\d.+', each['formula'])]
 
+#         if formula_value and employee_ssa[0]['base']:
+#             component_name = f"{each['salary_component']}"
+#             final_deductions.update({component_name: (employee_ssa[0]['base'] * float(pf_abbr[1])* formula_value[0])})
+
+#         elif formula_value and pf_amount:
+#             component_name = f"{each['salary_component']}"
+#             final_deductions.update({component_name: (float(pf_amount) * formula_value[0])})
+
+#         else:
+#             component_name = f"{each['salary_component']}"
+#             final_deductions.update({component_name: (each['amount'])})
+            
+#     return final_deductions
+
+import re
+
+def deductions_details(salary_earnings, salary_deductions, employee_ssa):
+    final_deductions = {}
+    
+    # Retrieve 'basic' amount from salary_earnings
+    basic_amount = None
+    for abr in salary_earnings:
+        if abr["abbr"] == 'basic':
+            basic_amount = abr['amount']
+            break
+
+    for each in salary_deductions:
+        pf_formula = each['formula'].split(' * ')
+        
+        formula_value = [float(s) for s in re.findall(r'\d.+', each['formula'])]
+        
         if formula_value and employee_ssa[0]['base']:
             component_name = f"{each['salary_component']}"
-            final_deductions.update({component_name: (employee_ssa[0]['base'] * float(pf_abbr[1])* formula_value[0])})
-
-        elif formula_value and pf_amount:
+            if basic_amount and basic_amount > 15000:
+                pf_base = 18000
+            else:
+                pf_base = employee_ssa[0]['base']
+            final_deductions.update({component_name: (pf_base * formula_value[0])})
+        
+        elif formula_value:
             component_name = f"{each['salary_component']}"
-            final_deductions.update({component_name: (float(pf_amount) * formula_value[0])})
-
+            if basic_amount and basic_amount > 15000:
+                pf_base = 18000
+            else:
+                pf_base = float(pf_amount)
+            final_deductions.update({component_name: (pf_base * formula_value[0])})
+        
         else:
             component_name = f"{each['salary_component']}"
             final_deductions.update({component_name: (each['amount'])})
-            
+    
     return final_deductions
-
-
-
 
 # import re
 

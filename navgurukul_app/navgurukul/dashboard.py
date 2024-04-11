@@ -83,24 +83,27 @@ def employee_on_leave():
 def employee_brithdays():
     try:
         print("---------------------------------")
-        # user = frappe.session.user
-        birthdays_list = frappe.db.get_list("Employee",['employee_name','date_of_birth'],ignore_permissions=True)
-        birthday_list = []
-        today = date.today()
-        
-        for birthday in birthdays_list:
-            birth_date = birthday['date_of_birth']
-            
-            birth_month_day = (birth_date.month, birth_date.day)
-            
-            current_month_day = (today.month, today.day)
-            
-            if current_month_day == birth_month_day:
-                birthday_list.append(birthday)
-        if len(birthday_list) > 0:        
-            message = f"<span style='font-size:12px;'>🎂{ birthday_list[0]['employee_name']}</span>"
-        else:
-            message = f"<span style='font-size:12px;'>🎂 No Birthdays Today.</span>"
+        user = frappe.get_roles()
+        for current_role in user:
+            if current_role == "Employee Self Service":
+                print("44444444444444444")
+                birthdays_list = frappe.db.get_list("Employee",['employee_name','date_of_birth'],ignore_permissions=True)
+                birthday_list = []
+                today = date.today()
+                
+                for birthday in birthdays_list:
+                    birth_date = birthday['date_of_birth']
+                    
+                    birth_month_day = (birth_date.month, birth_date.day)
+                    
+                    current_month_day = (today.month, today.day)
+                    
+                    if current_month_day == birth_month_day:
+                        birthday_list.append(birthday)
+                if len(birthday_list) > 0:        
+                    message = f"<span style='font-size:12px;'>🎂{ birthday_list[0]['employee_name']}</span>"
+                else:
+                    message = f"<span style='font-size:12px;'>🎂 No Birthdays Today.</span>"
             
         
         return message
