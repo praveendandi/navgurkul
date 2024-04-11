@@ -45,7 +45,7 @@ class LeaveApplication2(LeaveApplication):
 		if action == 'Reject' and not self.custom_reason_for_cancel:
 			frappe.throw("Please provide a reason for rejection before proceeding.")
 		if self.workflow_state == "Reject":
-			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Leave has been rejected for {self.employee_name}- {self.name}!! 📣")
+			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Leave has been rejected for {self.employee_name}!! 📣")
 				
 	
 def total_hours_count(doc, method=None):
@@ -78,10 +78,9 @@ def month_dates(doc, method=None):
 				if date_str:
 					if isinstance(date_str, str):
 						date = datetime.strptime(date_str, "%Y-%m-%d")
-						print(date,"///////////////44444")
 					else:
 						date = datetime(date_str.year, date_str.month, date_str.day)
-						print(date,"55555555555")
+						
 					teas_date = date.strftime("%b %Y")
 					month = timesheet.month
 					current_year = datetime.now().year
@@ -98,17 +97,17 @@ def month_dates(doc, method=None):
 						
 						if from_date <= date.date() <= to_date:
 							raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave. Please check!😇")
-			
+					
 		# Display success message once after the loop completes
 		if doc.workflow_state == "Pending" and not doc.reason_for_reject:
 			frappe.msgprint("🎉 Timesheet has been successfully updated 🚀")
 				
 		if doc.workflow_state == "Approve":
-			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}- {doc.name}!! 📣")
+			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}!! 📣")
 			
 		if doc.workflow_state == "Reject":
 			reason_for_reject(doc)
-			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected for {doc.employee_name}- {doc.name}!! 📣")
+			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected for {doc.employee_name}!! 📣")
 				
 					
 		
@@ -211,7 +210,9 @@ def create_leave_throw_attendance(doc,date):
 			"employee": doc.employee,
 			"from_date":date,
 			"to_date":date,
-			"half_day": 1
+			"half_day": 1,
+			"docstatus":1
+
 			})
 		
 		if balance.get("Casual Leave",None):
