@@ -15,6 +15,7 @@ from hrms.hr.doctype.leave_application.leave_application import get_leave_balanc
 import sys
 import traceback
 import json
+from collections import defaultdict
 
 
 class LeaveApplication2(LeaveApplication):
@@ -66,22 +67,36 @@ def total_hours_count(doc, method=None):
 
 def month_dates(doc, method=None):
 	try:
-		timesheets = frappe.db.sql("""SELECT t.name,t.employee,t.employee_name, t.month,t.workflow_state FROM `tabTime Tracker` as t""", as_dict=True) 
+		timesheets = frappe.db.sql("""SELECT t.name,t.employee,t.employee_name, t.month,t.workflow_state FROM `tabTime Tracker` as t WHERE 
+		t.docstatus = 0 OR t.docstatus = 1""", as_dict=True) 
 
+		# total_hours_per_date = defaultdict(int)
 		# Calculate total hours for this employee
 		for timesheet in timesheets:
-			timesheet_hrs = frappe.db.sql("SELECT ts.date FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
-			
+			timesheet_hrs = frappe.db.sql("SELECT ts.date,ts.hours FROM `tabDaily TimeSheet` as ts WHERE `parent` = %s", timesheet.name, as_dict=True)
+			total_hours_per_date = {}
 			# Convert each date string to datetime object and format month abbreviation
 			for entry in timesheet_hrs:
 				date_str = entry.get('date')
+				total_hours = entry.get('hours', 0)
 				if date_str:
 					if isinstance(date_str, str):
 						date = datetime.strptime(date_str, "%Y-%m-%d")
 					else:
 						date = datetime(date_str.year, date_str.month, date_str.day)
-						
-					teas_date = date.strftime("%b %Y")
+					if date_str in total_hours_per_date:
+						total_hours_per_date[date_str] += total_hours
+					else:
+						total_hours_per_date[date_str] = total_hours
+
+					for date_str, total_hours in total_hours_per_date.items():
+						# print(f"Date: {date_str}, Total Hours: {total_hours}")
+						if total_hours > 12:
+							raise ValidationError("Hey there!! You cannot enter more than 12 log hours for the same date. Please check!😊")
+								 
+					# teas_date = date.strftime("%b %Y")
+					teas_date = date_str.strftime("%b %Y")
+
 					month = timesheet.month
 					current_year = datetime.now().year
 					month_year = f"{month} {current_year}"
@@ -90,24 +105,23 @@ def month_dates(doc, method=None):
 						raise ValidationError("⚠️ Oops! Month and the date on the Timesheet has a mismatch. Please check. 😊")
 					else: 
 						pass  
-					# leave_applications = frappe.get_list("Leave Application", filters={"employee": timesheet.employee, "status": "Approved"}, fields=['from_date', 'to_date'])
-					# for leave_application in leave_applications:
-					# 	from_date = leave_application.get('from_date')
-					# 	to_date = leave_application.get('to_date')
-						
-					# 	if from_date <= date.date() <= to_date:
-					# 		raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave {date.date()}. Please check!😇")
 					leave_applications = frappe.get_list("Leave Application", filters={"employee": timesheet.employee, "status": "Approved"}, fields=['from_date', 'to_date', 'leave_type','total_leave_days'])
 					for leave_application in leave_applications:
 						from_date = leave_application.get('from_date')
 						to_date = leave_application.get('to_date')
 						# leave_type = leave_application.get('leave_type')
 						total_leave_days = leave_application.get('total_leave_days')
-						print(total_leave_days,"total_leave_daystotal_leave_daystotal_leave_days")
 						# For full-day leaves, check if the timesheet date falls within the leave period
-						if from_date <= date.date() <= to_date and total_leave_days > 0.5:
-							raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave {date.date()}. Please check!😇")
-
+						# if from_date <= date.date() <= to_date and total_leave_days > 0.5:
+						# 	raise ValidationError(f"Heyy there‼️ You cannot access this date as you have applied a leave on {date.date()}. Please check!😇")
+						if from_date <= date.date() <= to_date:
+							if total_leave_days > 0.5:
+								raise ValidationError(f"Hey there! You cannot enter hours for a full-day leave on {date.date()}. Please check!😊")	
+						
+							if total_leave_days <= 0.5:
+								if entry.get('hours') and entry.get('hours') > 4:
+									raise ValidationError(f"Hey there! You cannot enter more than 4 hours for a half-day leave on {date.date()}. Please check!😊")
+			
 		# Display success message once after the loop completes
 		if doc.workflow_state == "Pending" and not doc.reason_for_reject:
 			frappe.msgprint("🎉 Timesheet has been successfully updated 🚀")
@@ -241,16 +255,71 @@ def create_leave_throw_attendance(doc,date):
  
 @frappe.whitelist()
 def get_travel_request(doc):
+	
+	try:
+		row_data = json.loads(doc)
+		
+		costing_child = row_data.get("costings")
+		
+		travel_details = row_data.get("itinerary")
+		
+		return costing_child
+	
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		frappe.log_error("line No:{}\n{}".format(exc_tb.tb_lineno, traceback.format_exc()), "get_travel_request")
+
+# def weekoff_leave(doc, method=None):
+# 	weekoff_leave_data = frappe.db.get_list("Leave Application", 
+# 											['employee', 'from_date', 'to_date', 'total_leave_days', 'leave_type'])
+	
+# 	# Dictionary to hold leave count for each employee
+# 	leave_count = {}
+	
+# 	# Count leaves for each employee
+# 	for emp in weekoff_leave_data:
+# 		emp_id = emp['employee']
+# 		leave_type = emp['leave_type']
+		
+# 		# Initialize leave count for employee if not already present
+# 		if emp_id not in leave_count:
+# 			leave_count[emp_id] = 0
+		
+# 		# If leave type is not "week off", increment leave count
+# 		if leave_type == "Week Off":
+# 			leave_count[emp_id] += 1
+	
+# 	# Check if any employee has exceeded the leave limit
+# 	for emp_id, count in leave_count.items():
+# 		if count > 2:
+# 			frappe.throw(f"Employee {emp_id} has exceeded the leave limit for the month.")
+# 	print(leave_count)
+# 	return leave_count
+# def weekoff_leave(doc, method=None):
+#     # Get the current month and year
+#     current_month = datetime.date.today().month
+#     current_year = datetime.date.today().year
     
-    try:
-        row_data = json.loads(doc)
-        
-        costing_child = row_data.get("costings")
-        
-        travel_details = row_data.get("itinerary")
-        
-        return costing_child
+#     # Get the first and last day of the current month
+#     first_day_month = datetime.date(current_year, current_month, 1)
+#     last_day_month = datetime.date(current_year, current_month+1, 1) - datetime.timedelta(days=1)
     
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        frappe.log_error("line No:{}\n{}".format(exc_tb.tb_lineno, traceback.format_exc()), "get_travel_request")
+#     # Retrieve leave applications for the current month
+#     weekoff_leave_data = frappe.db.get_list("Leave Application", 
+#                                             filters={'from_date': ['>=', first_day_month],
+#                                                      'to_date': ['<=', last_day_month],
+#                                                      'leave_type': 'Week Off'},
+#                                             fields=['employee', 'from_date'])
+#     print(weekoff_leave_data,";;;;;;;;;")
+#     # Dictionary to hold leave count for each employee
+#     leave_count = defaultdict(int)
+    
+#     # Count week off leaves for each employee
+#     for leave_app in weekoff_leave_data:
+#         emp_id = leave_app['employee']
+#         leave_count[emp_id] += 1
+    
+#     # Check if any employee has already taken two week off leaves
+#     for emp_id, count in leave_count.items():
+#         if count >= 2:
+#             frappe.throw(f"Employee {emp_id} has already taken the maximum number of week off leaves for this month.")

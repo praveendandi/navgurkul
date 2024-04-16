@@ -163,7 +163,6 @@ doc_events = {
                 "navgurukul_app.navgurukul.events.month_dates"],
     "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
     },
-   
 # 	"*": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
