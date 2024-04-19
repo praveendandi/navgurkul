@@ -128,11 +128,13 @@ def month_dates(doc, method=None):
 				
 		if doc.workflow_state == "Approve":
 			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}!! 📣")
-			
-		if doc.workflow_state == "Reject":
-			reason_for_reject(doc)
-			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected for {doc.employee_name}!! 📣")
+		
+		# if doc.workflow_state == "Reapply":
+		# 	reason_for_reject(doc)
+		# 	frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected and sent for resubmission -{doc.employee_name}!! 📣")
 				
+		if doc.workflow_state == "Resubmitted Done":
+			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been Resubmitted Done for {doc.employee_name}!! 📣")
 					
 		
 	except Exception as e:
@@ -269,57 +271,37 @@ def get_travel_request(doc):
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		frappe.log_error("line No:{}\n{}".format(exc_tb.tb_lineno, traceback.format_exc()), "get_travel_request")
 
-# def weekoff_leave(doc, method=None):
-# 	weekoff_leave_data = frappe.db.get_list("Leave Application", 
-# 											['employee', 'from_date', 'to_date', 'total_leave_days', 'leave_type'])
+def weekoff_leave(year, month):
+	current_year = datetime.now().year
+	current_month = datetime.now().month
+	weekoff_leave_data = frappe.db.sql("""
+		SELECT employee, leave_type, from_date,total_leave_days
+		FROM `tabLeave Application`
+		WHERE leave_type = %s AND YEAR(from_date) = %s AND MONTH(from_date) = %s
+	""", ("Week Off", current_year, current_month), as_dict=True)
+
+	leave_info = {}
+
+	# Count leaves and total_leave_days for each employee
+	for emp in weekoff_leave_data:
+		emp_id = emp['employee']
+		leave_type = emp['leave_type']
+		total_leave_days = emp['total_leave_days']
+
+		if emp_id not in leave_info:
+			leave_info[emp_id] = {'leave_count': 0, 'total_leave_days': 0}
+
+		# If leave type is "Week Off", increment leave count
+		if leave_type == "Week Off":
+			leave_info[emp_id]['leave_count'] += 1
+			leave_info[emp_id]['total_leave_days'] += total_leave_days
+
+	# Check if any employee has exceeded the leave limit or total_leave_days
+	for emp_id, info in leave_info.items():
+		if info['total_leave_days'] > 2:
+			frappe.throw(f"Employee {emp_id} has applied for more than two week off leaves in the specified month.")
+		# if info['total_leave_days'] > 2:
+		# 	frappe.throw(f"Employee {emp_id} has total leave days exceeding 2 in the specified month.")
+
 	
-# 	# Dictionary to hold leave count for each employee
-# 	leave_count = {}
-	
-# 	# Count leaves for each employee
-# 	for emp in weekoff_leave_data:
-# 		emp_id = emp['employee']
-# 		leave_type = emp['leave_type']
-		
-# 		# Initialize leave count for employee if not already present
-# 		if emp_id not in leave_count:
-# 			leave_count[emp_id] = 0
-		
-# 		# If leave type is not "week off", increment leave count
-# 		if leave_type == "Week Off":
-# 			leave_count[emp_id] += 1
-	
-# 	# Check if any employee has exceeded the leave limit
-# 	for emp_id, count in leave_count.items():
-# 		if count > 2:
-# 			frappe.throw(f"Employee {emp_id} has exceeded the leave limit for the month.")
-# 	print(leave_count)
-# 	return leave_count
-# def weekoff_leave(doc, method=None):
-#     # Get the current month and year
-#     current_month = datetime.date.today().month
-#     current_year = datetime.date.today().year
-    
-#     # Get the first and last day of the current month
-#     first_day_month = datetime.date(current_year, current_month, 1)
-#     last_day_month = datetime.date(current_year, current_month+1, 1) - datetime.timedelta(days=1)
-    
-#     # Retrieve leave applications for the current month
-#     weekoff_leave_data = frappe.db.get_list("Leave Application", 
-#                                             filters={'from_date': ['>=', first_day_month],
-#                                                      'to_date': ['<=', last_day_month],
-#                                                      'leave_type': 'Week Off'},
-#                                             fields=['employee', 'from_date'])
-#     print(weekoff_leave_data,";;;;;;;;;")
-#     # Dictionary to hold leave count for each employee
-#     leave_count = defaultdict(int)
-    
-#     # Count week off leaves for each employee
-#     for leave_app in weekoff_leave_data:
-#         emp_id = leave_app['employee']
-#         leave_count[emp_id] += 1
-    
-#     # Check if any employee has already taken two week off leaves
-#     for emp_id, count in leave_count.items():
-#         if count >= 2:
-#             frappe.throw(f"Employee {emp_id} has already taken the maximum number of week off leaves for this month.")
+	return leave_info
