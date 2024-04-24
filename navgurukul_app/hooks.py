@@ -78,6 +78,8 @@ fixtures = [
                     "Employee-custom_other_assest",
                     "Employee-custom_marital_status",
                     "Expense Claim Detail-custom_rescript",
+                    "Attendance Request-custom_reason_for_rejection",
+                    "Compensatory Leave Request-custom_reason_for_reject",
                 },
              ]]
     }
@@ -164,8 +166,14 @@ doc_events = {
     "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
     },
     "Leave Application":{
-        "on_update": "navgurukul_app.navgurukul.events.weekoff_leave",
-
+        "on_update": "navgurukul_app.navgurukul.events.weekoff_leave"
+                      
+    },
+    "Attendance Request": {
+        "on_update": "navgurukul_app.navgurukul.events.notify_employee_on_submission"
+    },
+    "Compensatory Leave Request":{
+        "on_update": "navgurukul_app.navgurukul.events.notify_employee_comoff"
     }
 # 	"*": {
 # 		"on_update": "method",

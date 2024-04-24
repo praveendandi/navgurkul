@@ -33,6 +33,8 @@ class LeaveApplication2(LeaveApplication):
 			
 			if self.workflow_state == 'Pending':
 				self.validate_before_rejection('Pending')
+			if self.workflow_state == 'Approve':
+				self.validate_before_rejection('Approve')
 	def check_status_reject(self):
 			if self.workflow_state == 'Reject':
 				self.validate_before_rejection('Reject')
@@ -42,7 +44,8 @@ class LeaveApplication2(LeaveApplication):
 		# try:
 		if action == "Pending" and not self.custom_reason_for_cancel:
 			frappe.msgprint("Heyy😄!! Your leave request has been submitted🤩🏝️!")
-			
+		if action == "Approve" and not self.custom_reason_for_cancel:
+			frappe.msgprint(f"Heyy 👩🏻‍💻!! The Leave has been approved for {self.employee_name}!! 📣")
 		if action == 'Reject' and not self.custom_reason_for_cancel:
 			frappe.throw("Please provide a reason for rejection before proceeding.")
 		if self.workflow_state == "Reject":
@@ -305,3 +308,26 @@ def weekoff_leave(year, month):
 
 	
 	return leave_info
+
+
+def notify_employee_on_submission(doc, method=None):
+	if doc.workflow_state == "Pending" and not doc.custom_reason_for_rejection:
+		frappe.msgprint("🎉 Attendance request has been successfully updated 🚀")
+	if doc.workflow_state == "Approved":
+		frappe.msgprint(f"Heyy 👩🏻‍💻!! The attendance request has been approved for {doc.employee_name}!! 📣")
+	if doc.workflow_state == "Rejected" and not doc.custom_reason_for_rejection:
+		frappe.throw("Please provide a reason for rejection before proceeding.")
+	if doc.workflow_state == "Rejected":
+		frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The attendance request has been rejected for {doc.employee_name}!! 📣")
+
+def notify_employee_comoff(doc,method=None):
+	if doc.workflow_state == "Pending" and not doc.custom_reason_for_reject:
+		frappe.msgprint(" 🎉 Your Compensatory Leave Request has been successfully updated 🚀")
+	if doc.workflow_state == "Approved":
+		frappe.msgprint(f"Heyy 👩🏻‍💻!! The Compensatory Leave Request has been approved for {doc.employee_name}!! 📣")
+	if doc.workflow_state == "Rejected" and not doc.custom_reason_for_reject:
+		frappe.throw("Please provide a reason for rejection before proceeding.")
+	if doc.workflow_state == "Rejected":
+		frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Compensatory Leave Request has been rejected for {doc.employee_name}!! 📣")
+
+		
