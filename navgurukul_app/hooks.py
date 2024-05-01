@@ -174,7 +174,11 @@ doc_events = {
     },
     "Compensatory Leave Request":{
         "on_update": "navgurukul_app.navgurukul.events.notify_employee_comoff"
-    }
+    },
+
+    # "Expense Claim":{
+    #     "before_validate": "navgurukul_app.navgurukul.events.hide_approve_action"
+    # }
 # 	"*": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",

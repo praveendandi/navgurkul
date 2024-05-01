@@ -16,7 +16,7 @@ import sys
 import traceback
 import json
 from collections import defaultdict
-
+import calendar
 
 class LeaveApplication2(LeaveApplication):
 	def validate(self):
@@ -25,6 +25,9 @@ class LeaveApplication2(LeaveApplication):
 
 	def after_insert(self):
 		self.check_status()
+	def on_submit(self):
+		self.check_approve()
+
 
 	def on_update(self):
 		self.check_status_reject()
@@ -33,8 +36,11 @@ class LeaveApplication2(LeaveApplication):
 			
 			if self.workflow_state == 'Pending':
 				self.validate_before_rejection('Pending')
+
+	def check_approve(self):
 			if self.workflow_state == 'Approve':
 				self.validate_before_rejection('Approve')
+
 	def check_status_reject(self):
 			if self.workflow_state == 'Reject':
 				self.validate_before_rejection('Reject')
@@ -44,7 +50,7 @@ class LeaveApplication2(LeaveApplication):
 		# try:
 		if action == "Pending" and not self.custom_reason_for_cancel:
 			frappe.msgprint("Heyy😄!! Your leave request has been submitted🤩🏝️!")
-		if action == "Approve" and not self.custom_reason_for_cancel:
+		if action == "Approve":
 			frappe.msgprint(f"Heyy 👩🏻‍💻!! The Leave has been approved for {self.employee_name}!! 📣")
 		if action == 'Reject' and not self.custom_reason_for_cancel:
 			frappe.throw("Please provide a reason for rejection before proceeding.")
@@ -131,10 +137,10 @@ def month_dates(doc, method=None):
 				
 		if doc.workflow_state == "Approve":
 			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been approved for {doc.employee_name}!! 📣")
-		
-		# if doc.workflow_state == "Reapply":
-		# 	reason_for_reject(doc)
-		# 	frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected and sent for resubmission -{doc.employee_name}!! 📣")
+		if doc.workflow_state == "Reapply" and not doc.reason_for_reject:
+			frappe.throw("Please provide a reason for rejection before proceeding.") 
+		if doc.workflow_state == "Reapply" and not doc.reason_for_reject:
+			frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The time sheet has been rejected and sent for resubmission -{doc.employee_name}!! 📣")
 				
 		if doc.workflow_state == "Resubmitted Done":
 			frappe.msgprint(f"Heyy 👩🏻‍💻!! The time sheet has been Resubmitted Done for {doc.employee_name}!! 📣")
@@ -194,47 +200,129 @@ def get_employee_ctc(name):
 		frappe.log_error("line No:{}\n{}".format(exc_tb.tb_lineno, traceback.format_exc()), "get_employee_ctc")
 
 
+# def create_attendance(doc, method=None):
+# 	if method == "on_submit" or doc.workflow_state == "Approve":
+# 		for time_sheet in doc.time_sheets:
+# 			if not frappe.db.exists("Attendance",{"employee":doc.employee,"attendance_date":time_sheet.date}):
+# 				try:
+# 					create_attendance_record = frappe.get_doc({
+# 						"doctype": "Attendance",
+# 						"employee": doc.employee,
+# 						"attendance_date": time_sheet.date,
+# 						"docstatus":1
+# 					})
+# 					if time_sheet.hours > 4:
+# 						create_attendance_record.status = "Present"
+						
+# 					else:
+# 						create_attendance_record.status = "Half Day"
+# 						leave_type =create_leave_throw_attendance(doc,time_sheet.date)
+# 						create_attendance_record.leave_type = leave_type
+						
+				
+# 					create_attendance_record.insert()
+
+# 				except Exception as e:
+# 					continue
+
 def create_attendance(doc, method=None):
 	if method == "on_submit" or doc.workflow_state == "Approve":
+		# Create a dictionary to store total hours per date
+		total_hours_per_date = defaultdict(int)
+		month = doc.month
+		employee = doc.employee
+		month_num = list(calendar.month_abbr).index(month)
+		current_year = datetime.now().year
+
+		# Get the number of days in the month
+		num_days = calendar.monthrange(current_year, month_num)[1]
+
+		# Form the start and end dates
+		start_date = datetime(current_year, month_num, 1)
+		end_date = datetime(current_year, month_num, num_days)
+
+		employee_holidays = get_employee_holidays(doc.employee)
+		
+		# Calculate total hours per date
 		for time_sheet in doc.time_sheets:
-			if not frappe.db.exists("Attendance",{"employee":doc.employee,"attendance_date":time_sheet.date}):
+			total_hours_per_date[time_sheet.date.strftime("%Y-%m-%d")] += time_sheet.hours
+			
+		# Check each date between start_date and end_date
+		current_date = start_date
+		while current_date <= end_date:
+			date_str = current_date.strftime("%Y-%m-%d")
+			
+			# If date is missing in time_sheet, set attendance to "Absent"
+			if date_str not in total_hours_per_date and date_str not in employee_holidays:
+				
 				try:
 					create_attendance_record = frappe.get_doc({
 						"doctype": "Attendance",
 						"employee": doc.employee,
-						"attendance_date": time_sheet.date,
-						"docstatus":1
+						"attendance_date": date_str,
+						"status": "Absent",
+						"docstatus": 1
 					})
-					if time_sheet.hours > 4:
+					create_attendance_record.insert()
+				except Exception as e:
+					frappe.log_error(f"Error creating attendance: {e}")
+			current_date += timedelta(days=1)
+
+		# Create attendance records based on total hours per date
+		for date, total_hours in total_hours_per_date.items():
+			if not frappe.db.exists("Attendance", {"employee": doc.employee, "attendance_date": date}):
+				try:
+					create_attendance_record = frappe.get_doc({
+						"doctype": "Attendance",
+						"employee": doc.employee,
+						"attendance_date": date,
+						"docstatus": 1
+					})
+					if total_hours > 4:
 						create_attendance_record.status = "Present"
-						
 					else:
 						create_attendance_record.status = "Half Day"
-						leave_type =create_leave_throw_attendance(doc,time_sheet.date)
+						leave_type = create_leave_throw_attendance(doc, date)
 						create_attendance_record.leave_type = leave_type
-						
-				
 					create_attendance_record.insert()
-
 				except Exception as e:
-					continue
+					frappe.log_error(f"Error creating attendance: {e}")
+
+def get_employee_holidays(employee_id):
+	# Get the holiday list associated with the employee
+	data = frappe.db.get_value("Employee", employee_id, "holiday_list")
+
+	if data:
+		holiday_list_name = data
+
+		# Fetch holiday list details including child table data
+		holiday_list = frappe.get_doc("Holiday List", holiday_list_name)
+
+		# Extract holiday dates from the child table
+		holiday_dates = [holiday.holiday_date.strftime("%Y-%m-%d") for holiday in holiday_list.holidays]
+
+		return holiday_dates
+	else:
+		return []
+
 
 
 def create_leave_throw_attendance(doc,date):
 	try:
 
 		employee = doc.employee
-		leave_type = ['Casual Leave','Wellness Leave']
-		leave_date = date
-		balance = {}
+		# leave_type = ['Casual Leave','Wellness Leave']
+		# leave_date = date
+		# balance = {}
 
-		for i in leave_type:
-			balance_leave = get_leave_balance_on(employee,i,leave_date)
-			balance.update({i:balance_leave})
+		# for i in leave_type:
+		# 	balance_leave = get_leave_balance_on(employee,i,leave_date)
+		# 	balance.update({i:balance_leave})
 
 		create_leave = frappe.get_doc({
 			"doctype": "Leave Application",
 			"employee": doc.employee,
+			"leave_type":"Leave Without Pay",
 			"from_date":date,
 			"to_date":date,
 			"half_day": 1,
@@ -242,14 +330,14 @@ def create_leave_throw_attendance(doc,date):
 
 			})
 		
-		if balance.get("Casual Leave",None):
-			create_leave.leave_type = "Casual Leave"
-		else:
-			create_leave.leave_type = "Wellness Leave"
+		# if balance.get("Casual Leave",None):
+		# 	create_leave.leave_type = "Casual Leave"
+		# else:
+		# 	create_leave.leave_type = "Wellness Leave"
 
 		create_leave.insert()
 
-		return create_leave.leave_type
+		return create_leave
 	
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -329,5 +417,3 @@ def notify_employee_comoff(doc,method=None):
 		frappe.throw("Please provide a reason for rejection before proceeding.")
 	if doc.workflow_state == "Rejected":
 		frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Compensatory Leave Request has been rejected for {doc.employee_name}!! 📣")
-
-		
