@@ -174,11 +174,12 @@ doc_events = {
     },
     "Compensatory Leave Request":{
         "on_update": "navgurukul_app.navgurukul.events.notify_employee_comoff"
+                     
     },
 
-    # "Expense Claim":{
-    #     "before_validate": "navgurukul_app.navgurukul.events.hide_approve_action"
-    # }
+    "Expense Claim":{
+        "on_update": "navgurukul_app.navgurukul.events.capping_expense"
+    }
 # 	"*": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
@@ -196,6 +197,9 @@ scheduler_events = {
 	"daily": [
 		"navgurukul_app.navgurukul.events.employee_age_current_experience"
 	],
+    "daily":[
+         "navgurukul_app.navgurukul.events.Compensatory_off"
+    ]
 # # 	"hourly": [
 # 		"navgurukul_app.tasks.hourly"
 # 	],

@@ -18,6 +18,8 @@ import json
 from collections import defaultdict
 import calendar
 
+from hrms.hr.doctype.expense_claim.expense_claim import ExpenseClaim 
+
 class LeaveApplication2(LeaveApplication):
 	def validate(self):
 		super().validate()
@@ -257,11 +259,17 @@ def create_attendance(doc, method=None):
 				
 				try:
 					create_attendance_record = frappe.get_doc({
-						"doctype": "Attendance",
+						# "doctype": "Attendance",
+						# "employee": doc.employee,
+						# "attendance_date": date_str,
+						# "status": "Absent",
+						# "docstatus": 1
+						"doctype": "Leave Application",
 						"employee": doc.employee,
-						"attendance_date": date_str,
-						"status": "Absent",
-						"docstatus": 1
+						"leave_type":"Leave Without Pay",
+						"from_date":date_str,
+						"to_date":date_str,
+						"docstatus":1
 					})
 					create_attendance_record.insert()
 				except Exception as e:
@@ -417,3 +425,41 @@ def notify_employee_comoff(doc,method=None):
 		frappe.throw("Please provide a reason for rejection before proceeding.")
 	if doc.workflow_state == "Rejected":
 		frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Compensatory Leave Request has been rejected for {doc.employee_name}!! 📣")
+
+
+
+from datetime import datetime, timedelta
+
+def Compensatory_off():
+	today = datetime.now().date()
+	
+	thirty_days_ago = today - timedelta(days=30)
+	delete_Compensatory_leave_request = frappe.db.get_list("Compensatory Leave Request", 
+														   {"workflow_state": "Approved",
+															"modified": ("<", thirty_days_ago)},
+														   ['name'])
+
+	for request in delete_Compensatory_leave_request:
+		try:
+			compensatory_doc = frappe.get_doc("Compensatory Leave Request", request.name)
+			compensatory_doc.cancel()
+			compensatory_doc.delete()
+			frappe.db.commit()
+		except Exception as e:
+			frappe.log_error(f"Error deleting compensatory leave request {request.name}: {e}")
+
+
+def capping_expense(doc, method=None):
+	
+	roles = frappe.get_roles()
+	
+	if "Report Manager" in roles and "Expense Approve high" not in roles:
+		if doc.workflow_state in ["Approve"]:
+			expense_claim_details = frappe.get_all("Expense Claim Detail", filters={"parent": doc.name},fields=['custom_travel_type','amount'])
+			for detail in expense_claim_details:
+				if detail.get('custom_travel_type') == 'Flight' and detail.get('amount') > 5000:
+						frappe.throw("You cannot approve this expense claim as the amount exceeds 5000. Please escalate for approval.")
+				if detail.get('custom_travel_type') == 'Bus' and detail.get('amount') > 1500:
+					frappe.throw("You cannot approve this expense claim as the amount exceeds 1500. Please escalate for approval.")		
+				if detail.get('custom_travel_type') == 'Train' and detail.get('amount') > 1500:
+					frappe.throw("You cannot approve this expense claim as the amount exceeds 2000. Please escalate for approval.")		
