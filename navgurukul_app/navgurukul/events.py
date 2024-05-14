@@ -269,7 +269,7 @@ def create_attendance(doc, method=None):
 						"leave_type":"Leave Without Pay",
 						"from_date":date_str,
 						"to_date":date_str,
-						"docstatus":1
+						"docstatus":1,
 					})
 					create_attendance_record.insert()
 				except Exception as e:

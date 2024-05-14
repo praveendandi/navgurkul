@@ -80,6 +80,8 @@ fixtures = [
                     "Expense Claim Detail-custom_rescript",
                     "Attendance Request-custom_reason_for_rejection",
                     "Compensatory Leave Request-custom_reason_for_reject",
+                    "Expense Claim Detail-custom_travel_type",
+                    "Expense Claim Detail-custom_bill_type",
                 },
              ]]
     }
