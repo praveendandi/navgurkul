@@ -201,7 +201,10 @@ scheduler_events = {
 	],
     "daily":[
          "navgurukul_app.navgurukul.events.Compensatory_off"
-    ]
+    ],
+    "corn":{
+        "2 * * * *":["navgurukul_app.navgurukul.tracker.send_mail_test"]
+    }
 # # 	"hourly": [
 # 		"navgurukul_app.tasks.hourly"
 # 	],
