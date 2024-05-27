@@ -1,0 +1,289 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{employee}-{employee_name}",
+ "creation": "2024-05-27 12:21:27.368756",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "date_of_joining",
+  "current_department",
+  "column_break_jfu5",
+  "current_designation",
+  "report_manager",
+  "work_location_type",
+  "employeement_type",
+  "section_break_sfi9",
+  "posh_policy",
+  "column_break_r2ul",
+  "attachment",
+  "column_break_bp3j",
+  "comment",
+  "section_break_u1za",
+  "code_of_conduct",
+  "column_break_rl0w",
+  "attach1",
+  "column_break_fdx6",
+  "comment1",
+  "section_break_kuj2",
+  "student_safeguard_policy",
+  "column_break_agi6",
+  "attach2",
+  "column_break_zxc3",
+  "comment2",
+  "section_break_n9w1",
+  "leave_policy",
+  "column_break_zbeg",
+  "attach3",
+  "column_break_t2mx",
+  "comment3",
+  "section_break_ducg",
+  "policy",
+  "column_break_awqn",
+  "attach4",
+  "column_break_sfbl",
+  "comment4"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee ",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "unique": 1
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Data",
+   "label": "Date of Joining"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "current_department",
+   "fieldtype": "Data",
+   "label": "Current Department"
+  },
+  {
+   "fieldname": "column_break_jfu5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "current_designation",
+   "fieldtype": "Data",
+   "label": "Current Designation "
+  },
+  {
+   "fetch_from": "employee.custom_reporting_manager_name",
+   "fieldname": "report_manager",
+   "fieldtype": "Data",
+   "label": "Report Manager"
+  },
+  {
+   "fetch_from": "employee.custom_work_location_type",
+   "fieldname": "work_location_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Work Location Type"
+  },
+  {
+   "fetch_from": "employee.employment_type",
+   "fieldname": "employeement_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employeement Type"
+  },
+  {
+   "fieldname": "section_break_sfi9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "posh_policy",
+   "fieldtype": "Heading",
+   "label": "Posh Policy"
+  },
+  {
+   "fieldname": "column_break_r2ul",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1-Kg3OtHcOdptBON4ne-eubQcivMBvO07/view?usp=drive_link",
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_bp3j",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Comment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_u1za",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "code_of_conduct",
+   "fieldtype": "Heading",
+   "label": "Code of Conduct"
+  },
+  {
+   "fieldname": "column_break_rl0w",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1KnNlC5h6esbed5TH7plni14sF9sNOEiN/view?usp=drive_link",
+   "fieldname": "attach1",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fdx6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comment1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Comment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_kuj2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "student_safeguard_policy",
+   "fieldtype": "Heading",
+   "label": "Student Safeguard Policy"
+  },
+  {
+   "fieldname": "column_break_agi6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1eqlAypHOY4_uEDQSQyfR4kgALMF_Twqk/view?usp=drive_link",
+   "fieldname": "attach2",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zxc3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comment2",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Comment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_n9w1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "leave_policy",
+   "fieldtype": "Heading",
+   "label": "Leave Policy"
+  },
+  {
+   "fieldname": "column_break_zbeg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/14VnbtR03R6YHHBXD1LTIfZQqPvlgO8Ss/view?usp=drive_link",
+   "fieldname": "attach3",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_t2mx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comment3",
+   "fieldtype": "Data",
+   "label": "Comment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_ducg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "policy",
+   "fieldtype": "Heading",
+   "label": "\u2060Reimbursement Policy"
+  },
+  {
+   "fieldname": "column_break_awqn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://docs.google.com/document/d/1aQNRbAgIHqz0gX2dslEbXZDM4DRCnFl2HU5ejhzQrl0/edit",
+   "fieldname": "attach4",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sfbl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comment4",
+   "fieldtype": "Data",
+   "label": "Comment",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-27 18:00:43.626674",
+ "modified_by": "Administrator",
+ "module": "Navgurukul",
+ "name": "Policies Module",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

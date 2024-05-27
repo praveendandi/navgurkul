@@ -1,0 +1,416 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{employee}-{employee_name}",
+ "creation": "2024-05-27 12:41:42.216869",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "date_of_joining",
+  "report_manager",
+  "column_break_ahfl",
+  "current_department",
+  "current_designation",
+  "work_location_type",
+  "employeement_type",
+  "section_break_f488",
+  "module_1",
+  "column_break_ut9u",
+  "attachement",
+  "column_break_fphx",
+  "duration_to_read_document",
+  "section_break_sdmh",
+  "module_2",
+  "column_break_9erq",
+  "attach1",
+  "column_break_eu0j",
+  "days1",
+  "section_break_ffot",
+  "module_3",
+  "column_break_aers",
+  "attach2",
+  "column_break_xfys",
+  "days2",
+  "section_break_ya8u",
+  "module_4",
+  "column_break_vwt7",
+  "attach3",
+  "column_break_jego",
+  "days3",
+  "section_break_rf5t",
+  "moduel_5",
+  "column_break_geew",
+  "attach4",
+  "column_break_j9jn",
+  "days4",
+  "section_break_imsd",
+  "module_6",
+  "column_break_lyme",
+  "attach5",
+  "column_break_ltbj",
+  "days5",
+  "section_break_1bak",
+  "module_7",
+  "column_break_xg0n",
+  "attach6",
+  "column_break_t8dx",
+  "days6",
+  "section_break_mq8q",
+  "module_8",
+  "column_break_f2y6",
+  "attach7",
+  "column_break_uzaw",
+  "days7",
+  "section_break_2go5",
+  "acknowledgement"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee ",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "unique": 1
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date of Joining"
+  },
+  {
+   "fetch_from": "employee.custom_reporting_manager_name",
+   "fieldname": "report_manager",
+   "fieldtype": "Data",
+   "label": "Report Manager"
+  },
+  {
+   "fieldname": "column_break_ahfl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "current_department",
+   "fieldtype": "Data",
+   "label": "Current Department"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "current_designation",
+   "fieldtype": "Data",
+   "label": "Current Designation"
+  },
+  {
+   "fetch_from": "employee.custom_work_location_type",
+   "fieldname": "work_location_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Work Location Type"
+  },
+  {
+   "fetch_from": "employee.employment_type",
+   "fieldname": "employeement_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employeement Type"
+  },
+  {
+   "fieldname": "section_break_f488",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_1",
+   "fieldtype": "Heading",
+   "label": "Module 1"
+  },
+  {
+   "fieldname": "column_break_ut9u",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1tFOlsIWQwzpOOxf_r_8swZ0hUZtd_NRA/view?usp=drive_link",
+   "fieldname": "attachement",
+   "fieldtype": "Attach",
+   "label": "Attachement",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fphx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "7",
+   "fieldname": "duration_to_read_document",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_sdmh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_2",
+   "fieldtype": "Heading",
+   "label": "Module 2"
+  },
+  {
+   "fieldname": "column_break_9erq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1QhkIdAuucVjlofpnYA3P_L3FQIpv86xE/view?usp=drive_link",
+   "fieldname": "attach1",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_eu0j",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "7",
+   "fieldname": "days1",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ffot",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_3",
+   "fieldtype": "Heading",
+   "label": "Module 3"
+  },
+  {
+   "fieldname": "column_break_aers",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1wy15dLzLWn2vH_8sbDbd9WYpr5s5p56k/view?usp=drive_link",
+   "fieldname": "attach2",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_xfys",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "7",
+   "fieldname": "days2",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ya8u",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_4",
+   "fieldtype": "Heading",
+   "label": "Module 4"
+  },
+  {
+   "fieldname": "column_break_vwt7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1ngUr9sEI1DnWqhIDiEatEwhEZaT6a9gi/view?usp=drive_link",
+   "fieldname": "attach3",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_jego",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "7",
+   "fieldname": "days3",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_rf5t",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "moduel_5",
+   "fieldtype": "Heading",
+   "label": "Moduel 5"
+  },
+  {
+   "fieldname": "column_break_geew",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1ZVhYdsXHZtiklcFARuIp_tq-C-3GiVX5/view?usp=drive_link",
+   "fieldname": "attach4",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_j9jn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "14",
+   "fieldname": "days4",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_imsd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_6",
+   "fieldtype": "Heading",
+   "label": "Module 6"
+  },
+  {
+   "fieldname": "column_break_lyme",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1NjeeGafYTlJ8h7WgKzBZmshcORwakbeJ/view?usp=drive_link",
+   "fieldname": "attach5",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ltbj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "14",
+   "fieldname": "days5",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_1bak",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_7",
+   "fieldtype": "Heading",
+   "label": "Module 7"
+  },
+  {
+   "fieldname": "column_break_xg0n",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1IrZ_hOb4fK0aEdi5LlH7pc7hPTw76HgI/view?usp=drive_link",
+   "fieldname": "attach6",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_t8dx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "14",
+   "fieldname": "days6",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document"
+  },
+  {
+   "fieldname": "section_break_mq8q",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "module_8",
+   "fieldtype": "Heading",
+   "label": "Module 8"
+  },
+  {
+   "fieldname": "column_break_f2y6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "https://drive.google.com/file/d/1gJdznjbk1HYNd4KxnEuVAMOCrtknMliy/view?usp=drive_link",
+   "fieldname": "attach7",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_uzaw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "14",
+   "fieldname": "days7",
+   "fieldtype": "Data",
+   "label": "Duration to Read Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2go5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "acknowledgement",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Acknowledgement",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-27 17:59:56.429998",
+ "modified_by": "Administrator",
+ "module": "Navgurukul",
+ "name": "Training Module",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
