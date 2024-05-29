@@ -82,6 +82,9 @@ fixtures = [
                     "Compensatory Leave Request-custom_reason_for_reject",
                     "Expense Claim Detail-custom_travel_type",
                     "Expense Claim Detail-custom_bill_type",
+                    "Expense Claim-custom_reason_for_reject",
+                    "Employee Advance-custom_reason_for_reject",
+                    "Travel Request-custom_reason_for_reject",
                 },
              ]]
     }
@@ -181,7 +184,17 @@ doc_events = {
 
     "Expense Claim":{
         "on_update": "navgurukul_app.navgurukul.events.capping_expense"
+    },
+    "Expense Claim":{
+        "on_update": "navgurukul_app.navgurukul.events.notify_expense_claim"
+    },
+     "Employee Advance":{
+        "on_update": "navgurukul_app.navgurukul.events.notify_employee_advance"
+    },
+      "Travel Request ":{
+        "on_update": "navgurukul_app.navgurukul.events.notify_travel_request"
     }
+
 # 	"*": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
