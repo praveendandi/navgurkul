@@ -1,0 +1,252 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{employee}-{employee_name}",
+ "creation": "2024-05-29 16:58:39.130193",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "date_of_joining",
+  "report_manager",
+  "column_break_lhfp",
+  "current_department",
+  "current_designation",
+  "work_location_type",
+  "employeement_type",
+  "section_break_maeu",
+  "exit_interview_status",
+  "exit_interview_date",
+  "ndc_date",
+  "column_break_wzmg",
+  "relieving_date",
+  "kt",
+  "exit_interview",
+  "section_break_cu1f",
+  "exit_interviewer",
+  "exit_interview_comment",
+  "column_break_u5pb",
+  "laptop_returned",
+  "laptop_return_date",
+  "laptop_extension",
+  "any_other_assets",
+  "column_break_sfr6",
+  "removal_of_slack",
+  "email_id",
+  "premium_acces",
+  "section_break_jqwo",
+  "comment_for_hr_and_finance",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee ",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Data",
+   "label": "Date of Joining "
+  },
+  {
+   "fetch_from": "employee.custom_reporting_manager_name",
+   "fieldname": "report_manager",
+   "fieldtype": "Data",
+   "label": "Report Manager"
+  },
+  {
+   "fieldname": "column_break_lhfp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "current_department",
+   "fieldtype": "Data",
+   "label": "Current Department"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "current_designation",
+   "fieldtype": "Data",
+   "label": "Current Designation"
+  },
+  {
+   "fetch_from": "employee.custom_work_location_type",
+   "fieldname": "work_location_type",
+   "fieldtype": "Data",
+   "label": "Work Location Type"
+  },
+  {
+   "fetch_from": "employee.employment_type",
+   "fieldname": "employeement_type",
+   "fieldtype": "Data",
+   "label": "Employeement Type"
+  },
+  {
+   "fieldname": "section_break_maeu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "exit_interview_status",
+   "fieldtype": "Select",
+   "label": "Exit Interview Status",
+   "options": "\nDone\nPending\nNo Need"
+  },
+  {
+   "fetch_from": "employee.held_on",
+   "fieldname": "exit_interview_date",
+   "fieldtype": "Date",
+   "label": "Exit Interview Date"
+  },
+  {
+   "fieldname": "ndc_date",
+   "fieldtype": "Date",
+   "label": "NDC Date"
+  },
+  {
+   "fetch_from": "employee.relieving_date",
+   "fieldname": "relieving_date",
+   "fieldtype": "Data",
+   "label": "Relieving Date"
+  },
+  {
+   "fieldname": "kt",
+   "fieldtype": "Link",
+   "label": "KT ",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "exit_interview",
+   "fieldtype": "Select",
+   "label": "Exit Interview ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "exit_interviewer",
+   "fieldtype": "Link",
+   "label": "Exit Interviewer",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "exit_interview_comment",
+   "fieldtype": "Small Text",
+   "label": "Exit Interviewer Comment"
+  },
+  {
+   "fieldname": "laptop_returned",
+   "fieldtype": "Select",
+   "label": "Laptop Returned",
+   "options": "\nYes\nNo\nNot Applicable"
+  },
+  {
+   "depends_on": "eval:doc.laptop_returned==\"Yes\"",
+   "fieldname": "laptop_return_date",
+   "fieldtype": "Date",
+   "label": "Laptop Return Date"
+  },
+  {
+   "depends_on": "eval:doc.laptop_returned==\"No\"",
+   "fieldname": "laptop_extension",
+   "fieldtype": "Select",
+   "label": "Laptop Extension",
+   "options": "\nYes\nNo"
+  },
+  {
+   "default": "0",
+   "fieldname": "removal_of_slack",
+   "fieldtype": "Check",
+   "label": "Removal of Slack"
+  },
+  {
+   "default": "0",
+   "fieldname": "email_id",
+   "fieldtype": "Check",
+   "label": "Email ID"
+  },
+  {
+   "default": "0",
+   "fieldname": "premium_acces",
+   "fieldtype": "Check",
+   "label": "Premium Acces"
+  },
+  {
+   "fieldname": "comment_for_hr_and_finance",
+   "fieldtype": "Small Text",
+   "label": "Comment For HR And Finance"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Exit Checklist",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_wzmg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_cu1f",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "any_other_assets",
+   "fieldtype": "Data",
+   "label": "Any Other Assets"
+  },
+  {
+   "fieldname": "column_break_sfr6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jqwo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_u5pb",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-06-03 10:32:10.390061",
+ "modified_by": "Administrator",
+ "module": "Navgurukul",
+ "name": "Exit Checklist",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
