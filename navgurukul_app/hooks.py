@@ -166,13 +166,12 @@ override_doctype_class = {
 
 doc_events = {
     "Time Tracker":{
-    "on_update": ["navgurukul_app.navgurukul.events.total_hours_count",
-                "navgurukul_app.navgurukul.events.month_dates"],
+    "on_update": "navgurukul_app.navgurukul.events.month_dates",
     "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
     },
     "Leave Application":{
         "on_update": "navgurukul_app.navgurukul.events.weekoff_leave"
-                      
+                
     },
     "Attendance Request": {
         "on_update": "navgurukul_app.navgurukul.events.notify_employee_on_submission"
@@ -188,10 +187,10 @@ doc_events = {
     "Expense Claim":{
         "on_update": "navgurukul_app.navgurukul.events.notify_expense_claim"
     },
-     "Employee Advance":{
+    "Employee Advance":{
         "on_update": "navgurukul_app.navgurukul.events.notify_employee_advance"
     },
-      "Travel Request ":{
+    "Travel Request":{
         "on_update": "navgurukul_app.navgurukul.events.notify_travel_request"
     }
 
@@ -214,7 +213,7 @@ scheduler_events = {
 	],
     "daily":[
          "navgurukul_app.navgurukul.events.Compensatory_off"
-    ]
+    ],
 # # 	"hourly": [
 # 		"navgurukul_app.tasks.hourly"
 # 	],
@@ -224,6 +223,11 @@ scheduler_events = {
 # 	"monthly": [
 # 		"navgurukul_app.tasks.monthly"
 # 	],
+    "corn":{
+        "* 11 28 * *":[
+            "navgurukul_app.navgurukul.tracker.send_mail_test"
+        ]
+    }
 }
 
 # Testing
