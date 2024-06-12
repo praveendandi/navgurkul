@@ -161,10 +161,10 @@ def employee_age_current_experience():
 			date_of_joining = emp.date_of_joining
 			date_of_birth = emp.date_of_birth
 
-			# Calculate experience only if date_of_joining is not None
+		
 			if date_of_joining:
 				today = date.today()
-				# If the joining date is in the future, set current_experience as empty
+	
 				if today < date_of_joining:
 					current_experience = ""
 				else:

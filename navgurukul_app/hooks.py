@@ -172,7 +172,7 @@ doc_events = {
     "Leave Application":{
         "on_update": ["navgurukul_app.navgurukul.events.weekoff_leave","navgurukul_app.navgurukul.events.on_update"],
         "after_insert": "navgurukul_app.navgurukul.events.after_insert",
-        "on_submit": "navgurukul_app.navgurukul.events.on_submit",
+        "on_submit": "navgurukul_app.navgurukul.events.on_submit"
                 
     },
     "Attendance Request": {
