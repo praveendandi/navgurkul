@@ -154,11 +154,11 @@ fixtures = [
 # ---------------
 # Override standard doctype classes
 
-override_doctype_class = {
-#     "Employee":"navgurukul_app.navgurukul.events.Employee_2"
-        "Leave Application":"navgurukul_app.navgurukul.events.LeaveApplication2"
-# 	# "ToDo": "custom_app.overrides.CustomToDo"
-}
+# override_doctype_class = {
+# #     "Employee":"navgurukul_app.navgurukul.events.Employee_2"
+#         "Leave Application":"navgurukul_app.navgurukul.events.LeaveApplication2"
+# # 	# "ToDo": "custom_app.overrides.CustomToDo"
+# }
 
 # Document Events
 # ---------------
@@ -170,7 +170,9 @@ doc_events = {
     "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
     },
     "Leave Application":{
-        "on_update": "navgurukul_app.navgurukul.events.weekoff_leave"
+        "on_update": ["navgurukul_app.navgurukul.events.weekoff_leave","navgurukul_app.navgurukul.events.on_update"],
+        "after_insert": "navgurukul_app.navgurukul.events.after_insert",
+        "on_submit": "navgurukul_app.navgurukul.events.on_submit",
                 
     },
     "Attendance Request": {
