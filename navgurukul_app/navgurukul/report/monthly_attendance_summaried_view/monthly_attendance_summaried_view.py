@@ -496,7 +496,7 @@ def get_attendance_status_for_detailed_view(
                 row[str(day)] = status if status else ""
 
         attendance_values.append(row)
-
+        print("////////")
     return attendance_values
 
 def get_leave_type_abbreviation(leave_type: str) -> str:
@@ -523,8 +523,6 @@ def get_leave_type_abbreviation(leave_type: str) -> str:
     return leave_type_abbreviations.get(leave_type, leave_type)
 
 
-
-# leave type details are showing
 
 
 
