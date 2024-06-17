@@ -33,7 +33,7 @@ def on_update(self,method=None):
 		
 def check_status(self):
 		
-	if self.workflow_state == 'Pending':
+	if self.workflow_state == 'Pending' and '__unsaved' not in self.as_dict():
 		validate_before_rejection(self,'Pending')
 
 def check_approve(self):
@@ -214,19 +214,22 @@ def create_attendance(doc, method=None):
 
 	employee_holidays = get_employee_holidays(employee)
 	
+	# Time Tracker Date
 	for time_sheet in doc.time_sheets:
 		date_str = time_sheet.date.strftime("%Y-%m-%d")
 		total_hours_per_date[date_str] += time_sheet.hours
 		
-	current_date = start_date
-	while current_date <= end_date:
-		date_str = current_date.strftime("%Y-%m-%d")
+	current_date = start_date  # start date of month
+	# while current_date <= end_date:
+	# 	date_str = current_date.strftime("%Y-%m-%d")
 		
-		if date_str not in total_hours_per_date and date_str not in employee_holidays:
-			if not check_existing_leave_application(employee, date_str):
-				create_leave_application(employee, date_str)
+	# 	if date_str in total_hours_per_date and date_str not in employee_holidays:
+	# 		if not check_existing_leave_application(employee, date_str):
+	# 			create_attendance_records(employee, total_hours_per_date, employee_holidays)
+
+	# 			# create_leave_application(employee, date_str)
 		
-		current_date += timedelta(days=1)
+	# 	current_date += timedelta(days=1)
 
 	create_attendance_records(employee, total_hours_per_date, employee_holidays)
 
@@ -238,7 +241,7 @@ def create_leave_application(employee, date_str):
 			"leave_type": "Leave Without Pay",
 			"from_date": date_str,
 			"to_date": date_str,
-			"docstatus": 1,
+			# "docstatus": 1,
 			"status":"Approved"
 		})
 		leave_application.insert()
@@ -260,8 +263,8 @@ def create_attendance_records(employee, total_hours_per_date, employee_holidays)
 						attendance_record.status = "Present"
 					elif date not in employee_holidays:
 						attendance_record.status = "Half Day"
-						leave_type = create_leave_throw_attendance(employee, date)
-						attendance_record.leave_type = leave_type
+						# leave_type = create_leave_throw_attendance(employee, date)
+						# attendance_record.leave_type = leave_type
 					else:
 						attendance_record.status = "Half Day"
 					
@@ -275,7 +278,7 @@ def check_existing_leave_application(employee, date_str):
 		"employee": employee,
 		"from_date": ["<=", date_str],
 		"to_date": [">=", date_str],
-		"status": "Approved"
+		"workflow_state": ["IN",["Approved"]]
 	})
 	if leave_exists:
 		frappe.log_error(f"Conflict: Employee {employee} already has approved leave application for {date_str}")
@@ -293,16 +296,16 @@ def get_employee_holidays(employee_id):
 def create_leave_throw_attendance(doc,date):
 	try:
 
-		employee = doc.employee
+		# employee = doc.employee
 
 		create_leave = frappe.get_doc({
 			"doctype": "Leave Application",
-			"employee": doc.employee,
+			"employee": doc,
 			"leave_type":"Leave Without Pay",
 			"from_date":date,
 			"to_date":date,
 			"half_day": 1,
-			"docstatus":1,
+			# "docstatus":1,
 			"status": "Approved"
 
 			})
@@ -315,8 +318,6 @@ def create_leave_throw_attendance(doc,date):
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		frappe.log_error("line No:{}\n{}".format(exc_tb.tb_lineno, traceback.format_exc()), "create_leave_throw_attendance")
 
-
- 
  
 @frappe.whitelist()
 def get_travel_request(doc):
