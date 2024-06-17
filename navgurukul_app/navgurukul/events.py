@@ -230,7 +230,7 @@ def create_attendance(doc, method=None):
 	# 			# create_leave_application(employee, date_str)
 		
 	# 	current_date += timedelta(days=1)
-
+	print("...........")
 	create_attendance_records(employee, total_hours_per_date, employee_holidays)
 
 def create_leave_application(employee, date_str):
