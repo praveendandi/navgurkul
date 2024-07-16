@@ -27,7 +27,7 @@ app_license = "mit"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
-# include js in doctype views
+# include js in doctype views  
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -166,9 +166,11 @@ fixtures = [
 
 doc_events = {
     "Time Tracker":{
-    "on_update": "navgurukul_app.navgurukul.events.month_dates",
-    "on_submit":"navgurukul_app.navgurukul.events.create_attendance"
+    "on_update": ["navgurukul_app.navgurukul.time_tracker.time_tracker.total_hours_count",
+                 "navgurukul_app.navgurukul.events.display_workflow_message"],
+    "on_submit":"navgurukul_app.navgurukul.time_tracker.time_tracker.create_attendance_throgh_timesheet"
     },
+    
     "Leave Application":{
         "on_update": ["navgurukul_app.navgurukul.events.weekoff_leave","navgurukul_app.navgurukul.events.on_update"],
         "after_insert": "navgurukul_app.navgurukul.events.after_insert",
@@ -207,24 +209,12 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-# 	"all": [
-# 		"navgurukul_app.tasks.all"
-# 	],
-	"daily": [
-		"navgurukul_app.navgurukul.events.employee_age_current_experience"
-	],
+
     "daily":[
-         "navgurukul_app.navgurukul.events.Compensatory_off"
+        "navgurukul_app.navgurukul.events.Compensatory_off",
+        "navgurukul_app.navgurukul.events.employee_age_current_experience" 
     ],
-# # 	"hourly": [
-# 		"navgurukul_app.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"navgurukul_app.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"navgurukul_app.tasks.monthly"
-# 	],
+
     "corn":{
         "* 11 28 * *":[
             "navgurukul_app.navgurukul.tracker.send_mail_test"

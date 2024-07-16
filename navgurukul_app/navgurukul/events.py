@@ -134,7 +134,7 @@ def validate_leave_overlap(employee, date):
 			elif total_leave_days > 4:
 				raise frappe.ValidationError(f"Cannot enter more than 4 hours for a half-day leave on {date}. Please check! 😊")
 
-def display_workflow_message(doc):
+def display_workflow_message(doc,method=None):
 	if doc.workflow_state == "Pending" and not doc.reason_for_reject:
 		frappe.msgprint(_("Timesheet has been successfully updated 🚀"))
 	elif doc.workflow_state == "Approve":
@@ -261,7 +261,7 @@ def create_attendance_records(employee, total_hours_per_date, employee_holidays)
 					})
 					if total_hours > 4:
 						attendance_record.status = "Present"
-					elif date not in employee_holidays:
+					elif date not in employee_holidays and total_hours > 0 :
 						attendance_record.status = "Half Day"
 						# leave_type = create_leave_throw_attendance(employee, date)
 						# attendance_record.leave_type = leave_type
@@ -428,3 +428,41 @@ def capping_expense(doc, method=None):
 					frappe.throw("You cannot approve this expense claim as the amount exceeds 1500. Please escalate for approval.")		
 				if detail.get('custom_travel_type') == 'Train' and detail.get('amount') > 1500:
 					frappe.throw("You cannot approve this expense claim as the amount exceeds 2000. Please escalate for approval.")		
+
+
+def notify_expense_claim(doc,method=None):
+    if doc.workflow_state == "Pending From Expense Approver" and not doc.custom_reason_for_reject:
+        frappe.msgprint(" 🎉 Your Expense Claim Request has been successfully updated 🚀")
+    if doc.workflow_state == "Approved":
+        frappe.msgprint(f"Heyy 👩🏻‍💻!! The Expense Claim Request has been approved for {doc.employee_name}!! 📣")
+    if doc.workflow_state == "Approve":
+        frappe.msgprint(f"Heyy 👩🏻‍💻!! The Expense Claim Request has been approved for {doc.employee_name}!! 📣")
+    if doc.workflow_state == "Reject" and not doc.custom_reason_for_reject:
+        frappe.throw("Please provide a reason for rejection before proceeding.")
+    if doc.workflow_state == "Reject":
+        frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Expense Claim Request has been rejected for {doc.employee_name}!! 📣")
+
+
+def notify_employee_advance(doc,method=None): 
+    if doc.workflow_state == "Pending" and not doc.custom_reason_for_reject: 
+        frappe.msgprint(" 🎉 Your Employee Advance Request has been successfully updated 🚀")
+    if doc.workflow_state == "Approved":
+        frappe.msgprint(f"Heyy 👩🏻‍💻!! The Employee Advance Request has been approved for {doc.employee_name}!! 📣")
+    if doc.workflow_state == "Rejected" and not doc.custom_reason_for_reject:
+        frappe.throw("Please provide a reason for rejection before proceeding.")
+    if doc.workflow_state == "Rejected":
+        frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Employee Advance Request has been rejected for {doc.employee_name}!! 📣")
+
+
+def notify_travel_request(doc,method=None): 
+    if doc.workflow_state == "Pending" and not doc.custom_reason_for_reject: 
+        frappe.msgprint(" 🎉 Your Travel Request has been successfully updated 🚀")
+    if doc.workflow_state == "Approved":
+        frappe.msgprint(f"Heyy 👩🏻‍💻!! The Travel Request has been approved for {doc.employee_name}!! 📣")
+    if doc.workflow_state == "Rejected" and not doc.custom_reason_for_reject:
+        frappe.throw("Please provide a reason for rejection before proceeding.")
+    if doc.workflow_state == "Rejected":
+        frappe.msgprint(f"🚨 Heyy 👩🏻‍💻!! The Travel Request has been rejected for {doc.employee_name}!! 📣")
+
+
+
