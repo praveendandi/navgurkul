@@ -17,7 +17,7 @@
    "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Activity",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.hours > 0"
   },
   {
    "fieldname": "date",
@@ -45,7 +45,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-06-12 15:21:42.835062",
+ "modified": "2024-07-08 16:38:50.889846",
  "modified_by": "Administrator",
  "module": "Navgurukul",
  "name": "Daily TimeSheet",

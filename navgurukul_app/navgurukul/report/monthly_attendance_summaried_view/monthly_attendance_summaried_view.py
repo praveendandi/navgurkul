@@ -94,6 +94,7 @@ def get_columns(filters: Filters) -> List[Dict]:
            },
            {"label": _("Total Leaves"), "fieldname": "total_leaves", "fieldtype": "Float", "width": 110},
            {"label": _("Total Absent"), "fieldname": "total_absent", "fieldtype": "Float", "width": 110},
+           {"label": _("Total LWP"), "fieldname": "total_lwps", "fieldtype": "Float", "width": 110},
            {
                "label": _("Total Holidays"),
                "fieldname": "total_holidays",
@@ -385,6 +386,7 @@ def get_attendance_status_for_summarized_view(
        "total_present": summary.total_present + summary.total_half_days,
        "total_leaves": summary.total_leaves + summary.total_half_days,
        "total_absent": summary.total_absent,
+       "total_lwps":summary.total_lwps,
        "total_holidays": total_holidays,
        "unmarked_days": total_unmarked_days,
        "payable_days": summary.total_present + total_holidays + summary.total_leaves
@@ -404,7 +406,10 @@ def get_attendance_summary_and_days(employee: str, filters: Filters) -> Tuple[Di
    absent_case = frappe.qb.terms.Case().when(Attendance.status == "Absent", 1).else_(0)
    sum_absent = Sum(absent_case).as_("total_absent")
 
-   leave_case = frappe.qb.terms.Case().when(Attendance.status == "On Leave", 1).else_(0)
+   lwp_days = frappe.qb.terms.Case().when((Attendance.status == "On Leave")& (Attendance.leave_type == "Leave Without Pay"), 1).else_(0)
+   sum_lwps = Sum(lwp_days).as_("total_lwps")
+
+   leave_case = frappe.qb.terms.Case().when((Attendance.status == "On Leave") & (Attendance.leave_type != "Leave Without Pay") , 1).else_(0)
    sum_leave = Sum(leave_case).as_("total_leaves")
 
    half_day_case = frappe.qb.terms.Case().when(Attendance.status == "Half Day", 0.5).else_(0)
@@ -415,6 +420,7 @@ def get_attendance_summary_and_days(employee: str, filters: Filters) -> Tuple[Di
        .select(
            sum_present,
            sum_absent,
+           sum_lwps,
            sum_leave,
            sum_half_day,
        )
@@ -482,6 +488,8 @@ def get_attendance_status_for_detailed_view(
                 leave_type = get_leave_type_for_date(employee, filters.year, filters.month, day)
                 leave_type_abbreviation = get_leave_type_abbreviation(leave_type)
                 row[str(day)] = leave_type_abbreviation if leave_type_abbreviation else "L"
+            elif holiday_status == "Weekly Off" and status == "Present":
+                row[str(day)] = "P"
             elif holiday_status == "Weekly Off":
                 row[str(day)] = "WO"
             elif holiday_status == "Holiday":
@@ -496,7 +504,6 @@ def get_attendance_status_for_detailed_view(
                 row[str(day)] = status if status else ""
 
         attendance_values.append(row)
-        print("////////")
     return attendance_values
 
 def get_leave_type_abbreviation(leave_type: str) -> str:
